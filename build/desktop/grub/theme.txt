@@ -1,0 +1,48 @@
+# ============================================================================
+# AXLE OS — GRUB Bootloader Theme
+# ============================================================================
+# Dark, minimal bootloader that matches the AXLE brand identity.
+# ============================================================================
+
+title-text: "AXLE OS"
+title-color: "#60a5fa"
+title-font: "Inter Bold 24"
+desktop-color: "#0a0a1a"
+message-color: "#94a3b8"
+message-bg-color: "#1a1a3e"
+message-font: "Inter Regular 12"
+terminal-font: "Monospace Regular 12"
+terminal-box: "terminal_box_*.png"
+
+# Boot Menu
++ boot_menu {
+    left = 30%
+    top = 35%
+    width = 40%
+    height = 40%
+    item_color = "#94a3b8"
+    selected_item_color = "#60a5fa"
+    item_font = "Inter Regular 14"
+    selected_item_font = "Inter Bold 14"
+    item_height = 30
+    item_padding = 10
+    item_spacing = 5
+    icon_width = 0
+    icon_height = 0
+    selected_item_pixmap_style = "select_*.png"
+}
+
+# Progress bar
++ progress_bar {
+    id = "__timeout__"
+    left = 30%
+    top = 80%
+    width = 40%
+    height = 6
+    fg_color = "#60a5fa"
+    bg_color = "#1e293b"
+    border_color = "#1e293b"
+    text_color = "#94a3b8"
+    font = "Inter Regular 10"
+    text = "Booting in %d seconds..."
+}

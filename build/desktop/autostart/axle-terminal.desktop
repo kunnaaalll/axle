@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=AXLE Terminal
+Comment=Open AXLE OS command line
+Exec=xfce4-terminal --title="AXLE Terminal" --command="bash -c 'echo \"⚡ Welcome to AXLE OS Terminal\"; echo \"  Type axle --help for commands\"; echo; exec bash'"
+Icon=utilities-terminal
+Terminal=false
+Categories=System;TerminalEmulator;
+StartupNotify=true

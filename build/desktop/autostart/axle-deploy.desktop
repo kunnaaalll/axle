@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Deploy App
+Comment=Deploy a new application using AXLE OS AI
+Exec=xfce4-terminal --title="AXLE Deploy" --geometry=100x30 --command="bash -c 'echo \"⚡ AXLE OS — Quick Deploy\"; echo; read -p \"Enter GitHub URL: \" url; axle plan \$url; echo; read -p \"Press Enter to close...\"'"
+Icon=system-software-install
+Terminal=false
+Categories=System;
+StartupNotify=true

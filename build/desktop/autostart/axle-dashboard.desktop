@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=AXLE Dashboard
+Comment=Open the AXLE OS deployment dashboard
+Exec=firefox --new-window http://localhost:4000
+Icon=web-browser
+Terminal=false
+Categories=System;Monitor;
+StartupNotify=true

@@ -8,7 +8,8 @@
 //   3. AXLE appliance (Python package, dashboard, CLI)
 //   4. Branding (MOTD, os-release, banners)
 //   5. First-boot wizard service
-//   6. Cleanup (minimize image size)
+//   6. Desktop GUI (XFCE4, LightDM, Plymouth, branding)
+//   7. Cleanup (minimize image size)
 // =============================================================================
 
 packer {
@@ -57,14 +58,14 @@ source "amazon-ebs" "axle" {
 }
 
 // ---------------------------------------------------------------------------
-// Build: Run provisioning scripts in order (Layer 1 → 2 → 3 → branding)
+// Build: Run provisioning scripts in order
 // ---------------------------------------------------------------------------
 
 build {
   name    = "axle-os"
   sources = ["source.amazon-ebs.axle"]
 
-  // --- Layer 2: Base system update + essential packages ---
+  // --- Stage 1: Base system update + essential packages ---
   provisioner "shell" {
     script = "scripts/01-base-setup.sh"
     environment_vars = [
@@ -72,7 +73,7 @@ build {
     ]
   }
 
-  // --- Layer 2: Install full server stack ---
+  // --- Stage 2: Install full server stack ---
   provisioner "shell" {
     script = "scripts/02-server-stack.sh"
     environment_vars = [
@@ -80,7 +81,7 @@ build {
     ]
   }
 
-  // --- Layer 3: Install AXLE Python package + dashboard ---
+  // --- Stage 3: Install AXLE Python package + dashboard ---
   provisioner "shell" {
     script = "scripts/03-install-axle.sh"
     environment_vars = [
@@ -88,7 +89,7 @@ build {
     ]
   }
 
-  // --- Branding: MOTD, os-release, SSH banner ---
+  // --- Stage 4: Branding — MOTD, os-release, SSH banner ---
   provisioner "shell" {
     script = "scripts/04-branding.sh"
     environment_vars = [
@@ -96,13 +97,29 @@ build {
     ]
   }
 
-  // --- First-boot wizard systemd service ---
+  // --- Stage 5: First-boot wizard systemd service ---
   provisioner "shell" {
     script = "scripts/05-first-boot.sh"
   }
 
-  // --- Cleanup: Remove build artifacts, minimize image ---
+  // --- Stage 6: Upload desktop assets for GUI branding ---
+  provisioner "file" {
+    source      = "../desktop/"
+    destination = "/tmp/build/desktop/"
+  }
+
+  // --- Stage 7: Desktop GUI — XFCE4, LightDM, Plymouth, Remote Desktop ---
+  provisioner "shell" {
+    script = "scripts/07-desktop-gui.sh"
+    environment_vars = [
+      "DEBIAN_FRONTEND=noninteractive",
+      "AXLE_VERSION=${var.axle_version}"
+    ]
+  }
+
+  // --- Stage 8: Cleanup — Remove build artifacts, minimize image ---
   provisioner "shell" {
     script = "scripts/06-cleanup.sh"
   }
 }
+

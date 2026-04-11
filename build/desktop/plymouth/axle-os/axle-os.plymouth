@@ -1,0 +1,15 @@
+# ============================================================================
+# AXLE OS — Plymouth Boot Splash Theme
+# ============================================================================
+# Uses a centered logo + progress bar animation on a dark background.
+# Based on the 'script' Plymouth plugin.
+# ============================================================================
+
+[Plymouth Theme]
+Name=AXLE OS
+Description=AXLE OS Boot Splash
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/axle-os
+ScriptFile=/usr/share/plymouth/themes/axle-os/axle.script

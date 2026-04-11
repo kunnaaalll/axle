@@ -1,0 +1,41 @@
+# AXLE OS Plymouth Boot Animation Script
+# Uses the splash.png as a centered logo with a progress bar below it.
+
+# Background color
+Window.SetBackgroundTopColor(0.04, 0.04, 0.10);
+Window.SetBackgroundBottomColor(0.04, 0.04, 0.16);
+
+# Load and center the splash image
+logo.image = Image("splash.png");
+logo.sprite = Sprite(logo.image);
+logo.sprite.SetX(Window.GetWidth() / 2 - logo.image.GetWidth() / 2);
+logo.sprite.SetY(Window.GetHeight() / 2 - logo.image.GetHeight() / 2);
+
+# Progress bar settings
+progress_bar.original_image = Image("progress-bar.png");
+progress_bar.sprite = Sprite();
+progress_bar.x = Window.GetWidth() / 2 - 150;
+progress_bar.y = Window.GetHeight() / 2 + logo.image.GetHeight() / 2 + 30;
+
+fun refresh_callback() {
+    # Redraw on updates
+}
+
+Plymouth.SetRefreshFunction(refresh_callback);
+
+# Boot progress handler
+fun boot_progress_callback(duration, progress) {
+    if (progress < 0) progress = 0;
+    if (progress > 1) progress = 1;
+    
+    # Scale the progress bar width
+    new_width = progress * 300;
+    if (new_width > 1) {
+        progress_bar.image = progress_bar.original_image.Scale(new_width, 4);
+        progress_bar.sprite.SetImage(progress_bar.image);
+        progress_bar.sprite.SetX(progress_bar.x);
+        progress_bar.sprite.SetY(progress_bar.y);
+    }
+}
+
+Plymouth.SetBootProgressFunction(boot_progress_callback);

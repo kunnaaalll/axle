@@ -27,6 +27,7 @@ class TestPackerScripts:
         "build/packer/scripts/04-branding.sh",
         "build/packer/scripts/05-first-boot.sh",
         "build/packer/scripts/06-cleanup.sh",
+        "build/packer/scripts/07-desktop-gui.sh",
     ]
 
     @pytest.mark.parametrize("script_path", SCRIPTS)
@@ -170,3 +171,104 @@ class TestCloudInit:
     def test_user_data_sets_hostname(self):
         content = (PROJECT_ROOT / "build/cloud-init/user-data.yaml").read_text()
         assert "hostname:" in content
+
+
+class TestDesktopGUI:
+    """Verify Desktop GUI assets and configuration."""
+
+    def test_gui_install_script_exists(self):
+        path = PROJECT_ROOT / "build/packer/scripts/07-desktop-gui.sh"
+        assert path.exists()
+
+    def test_gui_script_installs_xfce4(self):
+        content = (PROJECT_ROOT / "build/packer/scripts/07-desktop-gui.sh").read_text()
+        assert "xfce4" in content
+
+    def test_gui_script_installs_lightdm(self):
+        content = (PROJECT_ROOT / "build/packer/scripts/07-desktop-gui.sh").read_text()
+        assert "lightdm" in content
+
+    def test_gui_script_installs_plymouth(self):
+        content = (PROJECT_ROOT / "build/packer/scripts/07-desktop-gui.sh").read_text()
+        assert "plymouth" in content
+
+    def test_gui_script_installs_rdp(self):
+        """Verify remote desktop access is configured for EC2."""
+        content = (PROJECT_ROOT / "build/packer/scripts/07-desktop-gui.sh").read_text()
+        assert "xrdp" in content
+
+    def test_wallpaper_exists(self):
+        assert (PROJECT_ROOT / "build/desktop/wallpapers/axle-default.png").exists()
+
+    def test_plymouth_theme_exists(self):
+        assert (PROJECT_ROOT / "build/desktop/plymouth/axle-os/axle-os.plymouth").exists()
+
+    def test_plymouth_theme_has_name(self):
+        content = (PROJECT_ROOT / "build/desktop/plymouth/axle-os/axle-os.plymouth").read_text()
+        assert "AXLE OS" in content
+
+    def test_plymouth_script_exists(self):
+        assert (PROJECT_ROOT / "build/desktop/plymouth/axle-os/axle.script").exists()
+
+    def test_plymouth_splash_image_exists(self):
+        assert (PROJECT_ROOT / "build/desktop/plymouth/axle-os/splash.png").exists()
+
+    def test_lightdm_config_exists(self):
+        path = PROJECT_ROOT / "build/desktop/lightdm/lightdm-gtk-greeter.conf"
+        assert path.exists()
+
+    def test_lightdm_has_theme(self):
+        content = (PROJECT_ROOT / "build/desktop/lightdm/lightdm-gtk-greeter.conf").read_text()
+        assert "Arc-Dark" in content
+
+    def test_lightdm_background_exists(self):
+        assert (PROJECT_ROOT / "build/desktop/lightdm/background.png").exists()
+
+    def test_grub_theme_exists(self):
+        path = PROJECT_ROOT / "build/desktop/grub/theme.txt"
+        assert path.exists()
+        assert "AXLE OS" in path.read_text()
+
+    def test_xfce_desktop_config_exists(self):
+        assert (PROJECT_ROOT / "build/desktop/xfce4/xfce4-desktop.xml").exists()
+
+    def test_xfce_desktop_sets_wallpaper(self):
+        content = (PROJECT_ROOT / "build/desktop/xfce4/xfce4-desktop.xml").read_text()
+        assert "axle-default.png" in content
+
+    def test_xfce_panel_config_exists(self):
+        assert (PROJECT_ROOT / "build/desktop/xfce4/xfce4-panel.xml").exists()
+
+    def test_xfce_wm_config_exists(self):
+        assert (PROJECT_ROOT / "build/desktop/xfce4/xfwm4.xml").exists()
+
+    def test_xfce_wm_uses_dark_theme(self):
+        content = (PROJECT_ROOT / "build/desktop/xfce4/xfwm4.xml").read_text()
+        assert "Arc-Dark" in content
+
+    def test_dashboard_desktop_entry(self):
+        path = PROJECT_ROOT / "build/desktop/autostart/axle-dashboard.desktop"
+        assert path.exists()
+        content = path.read_text()
+        assert "localhost:4000" in content
+        assert "[Desktop Entry]" in content
+
+    def test_terminal_desktop_entry(self):
+        path = PROJECT_ROOT / "build/desktop/autostart/axle-terminal.desktop"
+        assert path.exists()
+        content = path.read_text()
+        assert "AXLE" in content
+
+    def test_deploy_desktop_entry(self):
+        path = PROJECT_ROOT / "build/desktop/autostart/axle-deploy.desktop"
+        assert path.exists()
+        content = path.read_text()
+        assert "axle plan" in content
+
+    def test_packer_template_includes_gui_stage(self):
+        content = (PROJECT_ROOT / "build/packer/axle-ami.pkr.hcl").read_text()
+        assert "07-desktop-gui.sh" in content
+
+    def test_packer_template_uploads_desktop_assets(self):
+        content = (PROJECT_ROOT / "build/packer/axle-ami.pkr.hcl").read_text()
+        assert 'source      = "../desktop/"' in content
