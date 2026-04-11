@@ -57,43 +57,43 @@
 > **Goal**: Build the brain — project scanning, AI engine, and deployment planning.
 
 ### 2.1 Data Models (Finalize)
-- [ ] **T-032**: Expand `models.py` — add `FrameworkType` enum (express, django, fastapi, nextjs, flask, etc.)
-- [ ] **T-033**: Expand `models.py` — add `ServerProfile` model (CPU, RAM, disk, OS)
-- [ ] **T-034**: Expand `models.py` — add `DeploymentHistory` model (timestamp, status, plan snapshot)
-- [ ] **T-035**: Expand `models.py` — add `HealthMetrics` model (cpu_percent, ram_used, disk_used, etc.)
-- [ ] **T-036**: Write unit tests for all models (`tests/test_models.py`)
+- [x] **T-032**: Expand `models.py` — add `FrameworkType` enum (express, django, fastapi, nextjs, flask, etc.)
+- [x] **T-033**: Expand `models.py` — add `ServerProfile` model (CPU, RAM, disk, OS)
+- [x] **T-034**: Expand `models.py` — add `DeploymentHistory` model (timestamp, status, plan snapshot)
+- [x] **T-035**: Expand `models.py` — add `HealthMetrics` model (cpu_percent, ram_used, disk_used, etc.)
+- [x] **T-036**: Write unit tests for all models (`tests/test_models.py`)
 
 ### 2.2 Project Scanner
-- [ ] **T-037**: Create `axle/core/scanner.py` — `scan_repository(path)` function
-- [ ] **T-038**: Implement Node.js detection (package.json → read dependencies → detect framework)
-- [ ] **T-039**: Implement Python detection (requirements.txt / pyproject.toml → detect framework)
-- [ ] **T-040**: Implement Go detection (go.mod → detect framework)
-- [ ] **T-041**: Implement static site detection (index.html only, no backend)
-- [ ] **T-042**: Implement database detection (scan for DB connection strings, ORM packages)
-- [ ] **T-043**: Implement build/start command inference (scripts in package.json, Procfile, etc.)
-- [ ] **T-044**: Add GitHub URL cloning support (clone repo → scan → return ProjectProfile)
-- [ ] **T-045**: Write unit tests for scanner (`tests/test_scanner.py`) with fixture repos
+- [x] **T-037**: Create `axle/core/scanner.py` — `scan_repository(path)` function
+- [x] **T-038**: Implement Node.js detection (package.json → read dependencies → detect framework)
+- [x] **T-039**: Implement Python detection (requirements.txt / pyproject.toml → detect framework)
+- [x] **T-040**: Implement Go detection (go.mod → detect framework)
+- [x] **T-041**: Implement static site detection (index.html only, no backend)
+- [x] **T-042**: Implement database detection (scan for DB connection strings, ORM packages)
+- [x] **T-043**: Implement build/start command inference (scripts in package.json, Procfile, etc.)
+- [x] **T-044**: Add GitHub URL cloning support (clone repo → scan → return ProjectProfile)
+- [x] **T-045**: Write unit tests for scanner (`tests/test_scanner.py`) with fixture repos
 
 ### 2.3 AI Engine
-- [ ] **T-046**: Create `axle/ai/engine.py` — `AIEngine` class with provider abstraction
-- [ ] **T-047**: Define common interface: `generate_plan(profile, server) -> DeploymentPlan`
-- [ ] **T-048**: Define common interface: `diagnose(metrics, logs) -> str`
-- [ ] **T-049**: Create `axle/ai/providers/gemini_provider.py` — Google Gemini implementation
-- [ ] **T-050**: Create `axle/ai/providers/openai_provider.py` — OpenAI GPT implementation
-- [ ] **T-050B**: Create `axle/ai/providers/openrouter_provider.py` — OpenRouter multi-model implementation
-- [ ] **T-051**: Create `axle/ai/providers/ollama_provider.py` — Local Ollama implementation
-- [ ] **T-052**: Create `axle/ai/prompts.py` — system prompts for deployment planning
-- [ ] **T-053**: Add prompt for diagnosis/monitoring context
-- [ ] **T-054**: Implement provider fallback (Gemini → OpenRouter → OpenAI → Ollama)
-- [ ] **T-055**: Write unit tests for AI engine with mocked providers (`tests/test_ai.py`)
+- [x] **T-046**: Create `axle/ai/engine.py` — `AIEngine` class with provider abstraction
+- [x] **T-047**: Define common interface: `generate_plan(profile, server) -> DeploymentPlan`
+- [x] **T-048**: Define common interface: `diagnose(metrics, logs) -> str`
+- [x] **T-049**: Create `axle/ai/providers/gemini_provider.py` — Google Gemini implementation
+- [x] **T-050**: Create `axle/ai/providers/openai_provider.py` — OpenAI GPT implementation
+- [x] **T-050B**: Create `axle/ai/providers/openrouter_provider.py` — OpenRouter multi-model implementation
+- [x] **T-051**: Create `axle/ai/providers/ollama_provider.py` — Local Ollama implementation
+- [x] **T-052**: Create `axle/ai/prompts.py` — system prompts for deployment planning
+- [x] **T-053**: Add prompt for diagnosis/monitoring context
+- [x] **T-054**: Implement provider fallback (Gemini → OpenRouter → OpenAI → Ollama)
+- [x] **T-055**: Write unit tests for AI engine with mocked providers (`tests/test_ai.py`)
 
 ### 2.4 Deployment Planner
-- [ ] **T-056**: Create `axle/core/planner.py` — `Planner` class
-- [ ] **T-057**: Implement `generate_plan()` — takes ProjectProfile + ServerProfile → calls AI → returns DeploymentPlan
-- [ ] **T-058**: Implement step dependency resolution (which steps can run in parallel)
-- [ ] **T-059**: Implement plan validation (check all required steps present)
-- [ ] **T-060**: Implement plan preview/dry-run output (formatted for CLI)
-- [ ] **T-061**: Write unit tests for planner (`tests/test_planner.py`)
+- [x] **T-056**: Create `axle/core/planner.py` — `Planner` class
+- [x] **T-057**: Implement `generate_plan()` — takes ProjectProfile + ServerProfile → calls AI → returns DeploymentPlan
+- [x] **T-058**: Implement step dependency resolution (which steps can run in parallel)
+- [x] **T-059**: Implement plan validation (check all required steps present)
+- [x] **T-060**: Implement plan preview/dry-run output (formatted for CLI)
+- [x] **T-061**: Write unit tests for planner (`tests/test_planner.py`)
 
 ### 2.5 Sprint 2 Verification
 - [ ] **T-062**: End-to-end test: clone real repo → scan → generate plan → print plan
@@ -269,13 +269,13 @@
 | Sprint | Total Tasks | Done | Remaining |
 |--------|:-----------:|:----:|:---------:|
 | **1 — Foundation** | 31 | 28 | 3 |
-| **2 — Core Engine** | 35 | 0 | 35 |
+| **2 — Core Engine** | 35 | 30 | 5 |
 | **3 — Plugins** | 20 | 0 | 20 |
 | **4 — Execution** | 34 | 0 | 34 |
 | **5 — Dashboard** | 27 | 0 | 27 |
 | **6 — Polish** | 21 | 0 | 21 |
-| **TOTAL** | **168** | **28** | **140** |
+| **TOTAL** | **168** | **58** | **110** |
 
 ---
 
-> **Next Task**: `T-029` — Validate Packer template
+> **Next Task**: `T-062` — End-to-end verification tests
