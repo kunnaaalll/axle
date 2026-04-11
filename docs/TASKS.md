@@ -46,9 +46,9 @@
 - [x] **T-028**: Create `build/cloud-init/user-data.yaml` (default cloud-init config)
 
 ### 1.4 Sprint 1 Verification
-- [ ] **T-029**: Validate Packer template with `packer validate`
-- [ ] **T-030**: Test branding scripts locally
-- [ ] **T-031**: Update DEVLOG and CHANGELOG with Sprint 1 completion
+- [x] **T-029**: Validate Packer template with `packer validate`
+- [x] **T-030**: Test branding scripts locally
+- [x] **T-031**: Update DEVLOG and CHANGELOG with Sprint 1 completion
 
 ---
 
@@ -95,12 +95,12 @@
 - [x] **T-060**: Implement plan preview/dry-run output (formatted for CLI)
 - [x] **T-061**: Write unit tests for planner (`tests/test_planner.py`)
 
-### 2.5 Sprint 2 Verification
-- [ ] **T-062**: End-to-end test: clone real repo → scan → generate plan → print plan
-- [ ] **T-063**: Test with Node.js + Express + PostgreSQL repo
-- [ ] **T-064**: Test with Python + FastAPI repo
-- [ ] **T-065**: Test with static HTML site
-- [ ] **T-066**: Update DEVLOG and CHANGELOG with Sprint 2 completion
+### 2.5 Core Verification
+- [x] **T-062**: End-to-end test: clone real repo → scan → generate plan → print plan
+- [x] **T-063**: Test with Node.js + Express + PostgreSQL repo
+- [x] **T-064**: Test with Python + FastAPI repo
+- [x] **T-065**: Test with static HTML site
+- [x] **T-066**: Update DEVLOG and CHANGELOG with Sprint 2 completion
 
 ---
 
@@ -138,11 +138,26 @@
 
 ---
 
-## Sprint 4 — Execution + CLI + Vault
+## Sprint 4 — Desktop GUI Integration
+
+> **Goal**: Turn the headless OS into a full, branded Linux desktop experience.
+
+### 4.1 Desktop Environment
+- [x] **T-GUI-01**: Add `07-desktop-gui.sh` stage to Packer pipeline
+- [x] **T-GUI-02**: Install XFCE4, Arc-Dark theme, and Papirus icon set
+- [x] **T-GUI-03**: Configure LightDM GTK Greeter with AXLE branding
+- [x] **T-GUI-04**: Build Plymouth boot splash animation and custom GRUB theme
+- [x] **T-GUI-05**: Configure xRDP and VNC for remote desktop access on EC2
+- [x] **T-GUI-06**: Create desktop shortcuts (Terminal, Deploy App, Dashboard)
+- [x] **T-GUI-07**: Write 28 unit tests for GUI assets and configs
+
+---
+
+## Sprint 5 — Execution + CLI + Vault
 
 > **Goal**: Wire everything together — execute plans, manage secrets, complete CLI.
 
-### 4.1 Async Task Runner
+### 5.1 Async Task Runner
 - [ ] **T-087**: Create `axle/core/runner.py` — `TaskRunner` class
 - [ ] **T-088**: Implement dependency graph execution (topological sort of steps)
 - [ ] **T-089**: Implement parallel execution of independent steps (asyncio.gather)
@@ -151,7 +166,7 @@
 - [ ] **T-092**: Implement failure handling (stop on error, rollback option)
 - [ ] **T-093**: Write unit tests for runner (`tests/test_runner.py`)
 
-### 4.2 Secrets Vault
+### 5.2 Secrets Vault
 - [ ] **T-094**: Create `axle/secrets/vault.py` — `Vault` class
 - [ ] **T-095**: Implement AES-256 encryption/decryption at rest
 - [ ] **T-096**: Implement PBKDF2 key derivation from admin password
@@ -160,7 +175,7 @@
 - [ ] **T-099**: Ensure AI isolation — `list_keys()` returns keys only, never values
 - [ ] **T-100**: Write unit tests for vault (`tests/test_vault.py`)
 
-### 4.3 Complete CLI
+### 5.3 Complete CLI
 - [ ] **T-101**: `axle deploy <url>` — full flow: clone → scan → plan → confirm → execute
 - [ ] **T-102**: `axle deploy --zip <file>` — deploy from ZIP archive
 - [ ] **T-103**: `axle plan <url>` — dry-run: show plan without executing
@@ -178,19 +193,19 @@
 - [ ] **T-115**: `axle update` — self-update AXLE packages
 - [ ] **T-116**: `axle dashboard start|stop` — control the web dashboard service
 
-### 4.4 Sprint 4 Verification
+### 5.4 Sprint 5 Verification
 - [ ] **T-117**: End-to-end CLI test: `axle deploy` with a real GitHub repo
 - [ ] **T-118**: Test secrets vault encryption round-trip
 - [ ] **T-119**: Test rollback creates and restores snapshots correctly
-- [ ] **T-120**: Update DEVLOG and CHANGELOG with Sprint 4 completion
+- [ ] **T-120**: Update DEVLOG and CHANGELOG with Sprint 5 completion
 
 ---
 
-## Sprint 5 — Web Dashboard
+## Sprint 6 — Web Dashboard
 
 > **Goal**: Build the browser-based real-time dashboard.
 
-### 5.1 Flask API Backend
+### 6.1 Flask API Backend
 - [ ] **T-121**: Create `web/api/app.py` — Flask app factory + Socket.IO + CORS
 - [ ] **T-122**: Create `web/api/auth.py` — password login (bcrypt hash, session token)
 - [ ] **T-123**: Create `web/api/routes/deploy.py` — POST /deploy, GET /deploy/status
@@ -201,13 +216,13 @@
 - [ ] **T-128**: Create `web/api/websocket.py` — Socket.IO events for live logs
 - [ ] **T-129**: Write API tests (`tests/test_api/`)
 
-### 5.2 React Frontend Setup
+### 6.2 React Frontend Setup
 - [ ] **T-130**: Initialize Vite + React 18 project in `web/dashboard/`
 - [ ] **T-131**: Create design system: dark theme, color tokens, typography (`index.css`)
 - [ ] **T-132**: Create layout: sidebar navigation + main content area
 - [ ] **T-133**: Install and configure Socket.IO client, React Router
 
-### 5.3 Dashboard Components
+### 6.3 Dashboard Components
 - [ ] **T-134**: Build `DeployWizard` — URL input → scan progress → plan review → deploy → live logs
 - [ ] **T-135**: Build `LogViewer` — real-time terminal output with ANSI color support
 - [ ] **T-136**: Build `Dashboard` (home) — system metrics cards (CPU, RAM, disk), deployment status
@@ -216,44 +231,44 @@
 - [ ] **T-139**: Build `Chatbot` — AI chat panel with message history
 - [ ] **T-140**: Build login page — password-based authentication
 
-### 5.4 systemd Services
+### 6.4 systemd Services
 - [ ] **T-141**: Create `axle-api.service` (runs Flask API on boot)
 - [ ] **T-142**: Create `axle-dashboard.service` (serves React build on :4000)
 
-### 5.5 Sprint 5 Verification
+### 6.5 Sprint 6 Verification
 - [ ] **T-143**: Test dashboard login flow
 - [ ] **T-144**: Test deploy wizard end-to-end from browser
 - [ ] **T-145**: Test live log streaming via WebSocket
 - [ ] **T-146**: Test secrets management from UI
-- [ ] **T-147**: Update DEVLOG and CHANGELOG with Sprint 5 completion
+- [ ] **T-147**: Update DEVLOG and CHANGELOG with Sprint 6 completion
 
 ---
 
-## Sprint 6 — Polish & Ship
+## Sprint 7 — Polish & Ship
 
 > **Goal**: End-to-end testing, error handling, documentation, publish.
 
-### 6.1 Error Handling & Resilience
+### 7.1 Error Handling & Resilience
 - [ ] **T-148**: Add graceful failure handling to task runner (rollback on error)
 - [ ] **T-149**: Add retry logic for transient failures (network, apt installs)
 - [ ] **T-150**: Add input validation for all CLI commands
 - [ ] **T-151**: Add input validation for all API endpoints
 
-### 6.2 End-to-End Testing
+### 7.2 End-to-End Testing
 - [ ] **T-152**: Deploy test: React + Express + PostgreSQL (full-stack)
 - [ ] **T-153**: Deploy test: Next.js (SSR application)
 - [ ] **T-154**: Deploy test: Django + PostgreSQL (Python stack)
 - [ ] **T-155**: Deploy test: FastAPI (Python API)
 - [ ] **T-156**: Deploy test: Static HTML site (simplest case)
 
-### 6.3 Documentation
+### 7.3 Documentation
 - [ ] **T-157**: Write final `README.md` with badges, screenshots, quick start
 - [ ] **T-158**: Finalize `docs/getting-started.md`
 - [ ] **T-159**: Finalize `docs/architecture.md` with final diagrams
 - [ ] **T-160**: Create `docs/building-the-image.md` (how to build AXLE AMI)
 - [ ] **T-161**: Create contributor guide (`CONTRIBUTING.md`)
 
-### 6.4 Release
+### 7.4 Release
 - [ ] **T-162**: Build final AXLE OS AMI
 - [ ] **T-163**: Test cold launch on fresh EC2 instance
 - [ ] **T-164**: Verify first-boot wizard works end-to-end
@@ -268,13 +283,14 @@
 
 | Sprint | Total Tasks | Done | Remaining |
 |--------|:-----------:|:----:|:---------:|
-| **1 — Foundation** | 31 | 28 | 3 |
-| **2 — Core Engine** | 35 | 30 | 5 |
+| **1 — Foundation** | 31 | 31 | 0 |
+| **2 — Core Engine** | 35 | 35 | 0 |
 | **3 — Plugins** | 20 | 20 | 0 |
-| **4 — Execution** | 34 | 0 | 34 |
-| **5 — Dashboard** | 27 | 0 | 27 |
-| **6 — Polish** | 21 | 0 | 21 |
-| **TOTAL** | **168** | **78** | **90** |
+| **4 — Desktop GUI** | 7 | 7 | 0 |
+| **5 — Execution** | 34 | 0 | 34 |
+| **6 — Dashboard** | 27 | 0 | 27 |
+| **7 — Polish** | 21 | 0 | 21 |
+| **TOTAL** | **175** | **93** | **82** |
 
 ---
 
