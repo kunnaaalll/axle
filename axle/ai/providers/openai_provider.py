@@ -1,37 +1,32 @@
 """
-AXLE OS — OpenRouter Provider (T-050B)
+AXLE OS — OpenAI GPT Provider (T-050)
 
-Uses the OpenAI-compatible API at openrouter.ai to access multiple models.
-Supports Claude, Llama, Mistral, and other models via a single key.
+Uses the openai SDK to generate deployments and diagnoses.
 """
 from typing import Optional
 from axle.ai.providers.base import BaseProvider
 
 
-class OpenRouterProvider(BaseProvider):
-    """OpenRouter multi-model provider (OpenAI-compatible API)."""
+class OpenAIProvider(BaseProvider):
+    """OpenAI GPT provider."""
 
-    name = "openrouter"
-    BASE_URL = "https://openrouter.ai/api/v1"
+    name = "openai"
 
-    def __init__(self, api_key: Optional[str] = None, model: str = "google/gemini-2.0-flash-exp:free"):
+    def __init__(self, api_key: Optional[str] = None, model: str = "gpt-4o-mini"):
         self.api_key = api_key
         self.model = model
         self._client = None
 
     def is_available(self) -> bool:
-        """Check if OpenRouter API key is configured."""
+        """Check if OpenAI API key is configured."""
         return bool(self.api_key)
 
     def _get_client(self):
-        """Lazy-initialize using the OpenAI SDK pointed at OpenRouter."""
+        """Lazy-initialize the OpenAI client."""
         if self._client is None:
             try:
                 from openai import OpenAI
-                self._client = OpenAI(
-                    api_key=self.api_key,
-                    base_url=self.BASE_URL,
-                )
+                self._client = OpenAI(api_key=self.api_key)
             except ImportError:
                 raise RuntimeError(
                     "openai package not installed. "
@@ -40,7 +35,7 @@ class OpenRouterProvider(BaseProvider):
         return self._client
 
     def generate(self, system_prompt: str, user_prompt: str, temperature: float = 0.3) -> str:
-        """Generate a response via OpenRouter."""
+        """Generate a response using OpenAI."""
         client = self._get_client()
         response = client.chat.completions.create(
             model=self.model,
@@ -49,9 +44,5 @@ class OpenRouterProvider(BaseProvider):
                 {"role": "user", "content": user_prompt},
             ],
             temperature=temperature,
-            extra_headers={
-                "HTTP-Referer": "https://axle.sh",
-                "X-Title": "AXLE OS",
-            },
         )
         return response.choices[0].message.content
