@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# =============================================================================
+# AXLE OS MOTD — 90-help (T-022)
+# Quick command reference shown at the bottom of MOTD
+# =============================================================================
+
+echo "  axle setup       — Configure AI provider & admin password"
+echo "  axle deploy      — Deploy from GitHub URL"
+echo "  axle status      — View deployment details"
+echo "  axle logs        — Stream application logs"
+echo "  axle chat        — Ask AI about your server"
+echo ""

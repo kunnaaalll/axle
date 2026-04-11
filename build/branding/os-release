@@ -1,0 +1,10 @@
+PRETTY_NAME="AXLE OS 1.0.0 (Based on Ubuntu 22.04 LTS)"
+NAME="AXLE OS"
+VERSION_ID="1.0.0"
+VERSION="AXLE OS 1.0.0"
+ID=axle
+ID_LIKE="ubuntu debian"
+HOME_URL="https://axle.sh"
+SUPPORT_URL="https://github.com/axle-os/axle/issues"
+BUG_REPORT_URL="https://github.com/axle-os/axle/issues"
+UBUNTU_CODENAME=jammy

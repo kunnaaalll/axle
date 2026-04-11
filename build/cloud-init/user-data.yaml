@@ -1,0 +1,41 @@
+#cloud-config
+# =============================================================================
+# AXLE OS — Cloud-Init User Data (T-028)
+#
+# Default cloud-init configuration for AXLE OS AMI.
+# Handles initial system bootstrapping on first EC2 launch.
+# =============================================================================
+
+# --- System identity ---
+hostname: axle-os
+manage_etc_hosts: true
+
+# --- Locale & timezone ---
+locale: en_US.UTF-8
+timezone: UTC
+
+# --- SSH hardening ---
+ssh_pwauth: false
+disable_root: true
+
+# --- Package management ---
+package_update: false   # Already updated during AMI build
+package_upgrade: false  # Already upgraded during AMI build
+
+# --- Ensure AXLE directories exist ---
+runcmd:
+  - mkdir -p /var/lib/axle
+  - mkdir -p /var/log/axle
+  - chown -R root:root /opt/axle
+  # Regenerate SSH host keys (removed during AMI cleanup)
+  - dpkg-reconfigure openssh-server
+  - systemctl restart sshd
+  # Display setup instructions on first login
+  - echo ""
+  - echo "AXLE OS is ready. Run 'axle setup' to begin."
+
+# --- Log output ---
+output:
+  all: '| tee -a /var/log/cloud-init-output.log'
+
+final_message: "AXLE OS cloud-init complete. System ready in $UPTIME seconds."

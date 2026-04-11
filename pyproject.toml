@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "axle-os"
+version = "0.1.0"
+description = "AI-Powered Linux Deployment Engine"
+authors = [
+    { name = "AXLE Team" }
+]
+requires-python = ">=3.10"
+dependencies = [
+    "click>=8.0",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "openai>=1.0",
+    "google-generativeai",
+    "ollama",
+    "paramiko>=3.0",
+    "cryptography",
+    "flask>=3.0",
+    "flask-socketio>=5.0",
+    "jinja2>=3.0",
+    "sqlalchemy>=2.0",
+    "rich",
+    "textual",
+    "pystray"
+]
+
+[project.scripts]
+axle = "axle.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

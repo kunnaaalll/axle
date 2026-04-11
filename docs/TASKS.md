@@ -1,0 +1,281 @@
+# AXLE OS — Master Task Tracker
+
+> **Rules**: Tasks are executed strictly in order. No task begins until its predecessor is complete.  
+> Every completion is logged in [DEVLOG.md](./DEVLOG.md) with a before/after summary.
+
+**Legend**: `[ ]` Todo · `[/]` In Progress · `[x]` Done · `[!]` Blocked
+
+---
+
+## Sprint 1 — Foundation & Scaffolding
+
+> **Goal**: Project infrastructure, build pipeline, branding. A launchable AMI skeleton.
+
+### 1.1 Project Infrastructure
+- [x] **T-001**: Create `docs/` folder and organize all documentation
+- [x] **T-002**: Set up change tracking (`CHANGELOG.md`, `DEVLOG.md`, `TASKS.md`)
+- [x] **T-003**: Scaffold full directory structure (axle/, web/, build/, templates/, tests/)
+- [x] **T-004**: Create `pyproject.toml` with all dependencies
+- [x] **T-005**: Create `.gitignore`, `.env.example`, `Makefile`
+- [x] **T-006**: Initialize all Python `__init__.py` module files
+- [x] **T-007**: Create stub `models.py` with Pydantic models
+- [x] **T-008**: Create stub `settings.py` with Pydantic settings
+- [x] **T-009**: Create stub `cli.py` with Click command group
+- [x] **T-010**: Create `__main__.py` entry point
+
+### 1.2 Packer Build Pipeline
+- [x] **T-011**: Create `build/packer/variables.pkr.hcl` (AWS region, instance type, AMI name)
+- [x] **T-012**: Create `build/packer/axle-ami.pkr.hcl` (main Packer template)
+- [x] **T-013**: Create `build/packer/scripts/01-base-setup.sh` (Ubuntu update, base deps)
+- [x] **T-014**: Create `build/packer/scripts/02-server-stack.sh` (Nginx, PostgreSQL, Node.js, Python, Go)
+- [x] **T-015**: Create `build/packer/scripts/03-install-axle.sh` (install AXLE Python package)
+- [x] **T-016**: Create `build/packer/scripts/04-branding.sh` (copy MOTD, os-release, banners)
+- [x] **T-017**: Create `build/packer/scripts/05-first-boot.sh` (install first-boot systemd service)
+- [x] **T-018**: Create `build/packer/scripts/06-cleanup.sh` (minimize image size)
+
+### 1.3 Branding & First-Boot
+- [x] **T-019**: Create `build/branding/motd/00-axle-banner` (ASCII art logo)
+- [x] **T-020**: Create `build/branding/motd/10-system-info` (CPU/RAM/disk script)
+- [x] **T-021**: Create `build/branding/motd/20-deployment-status` (current app status)
+- [x] **T-022**: Create `build/branding/motd/90-help` (quick command reference)
+- [x] **T-023**: Create `build/branding/os-release` (AXLE OS identity)
+- [x] **T-024**: Create `build/branding/issue` (pre-login banner)
+- [x] **T-025**: Create `build/branding/ssh-banner` (SSH connection banner)
+- [x] **T-026**: Create `build/firstboot/axle-firstboot.service` (systemd unit)
+- [x] **T-027**: Create `build/firstboot/axle-firstboot.py` (TUI setup wizard)
+- [x] **T-028**: Create `build/cloud-init/user-data.yaml` (default cloud-init config)
+
+### 1.4 Sprint 1 Verification
+- [ ] **T-029**: Validate Packer template with `packer validate`
+- [ ] **T-030**: Test branding scripts locally
+- [ ] **T-031**: Update DEVLOG and CHANGELOG with Sprint 1 completion
+
+---
+
+## Sprint 2 — Core Engine
+
+> **Goal**: Build the brain — project scanning, AI engine, and deployment planning.
+
+### 2.1 Data Models (Finalize)
+- [ ] **T-032**: Expand `models.py` — add `FrameworkType` enum (express, django, fastapi, nextjs, flask, etc.)
+- [ ] **T-033**: Expand `models.py` — add `ServerProfile` model (CPU, RAM, disk, OS)
+- [ ] **T-034**: Expand `models.py` — add `DeploymentHistory` model (timestamp, status, plan snapshot)
+- [ ] **T-035**: Expand `models.py` — add `HealthMetrics` model (cpu_percent, ram_used, disk_used, etc.)
+- [ ] **T-036**: Write unit tests for all models (`tests/test_models.py`)
+
+### 2.2 Project Scanner
+- [ ] **T-037**: Create `axle/core/scanner.py` — `scan_repository(path)` function
+- [ ] **T-038**: Implement Node.js detection (package.json → read dependencies → detect framework)
+- [ ] **T-039**: Implement Python detection (requirements.txt / pyproject.toml → detect framework)
+- [ ] **T-040**: Implement Go detection (go.mod → detect framework)
+- [ ] **T-041**: Implement static site detection (index.html only, no backend)
+- [ ] **T-042**: Implement database detection (scan for DB connection strings, ORM packages)
+- [ ] **T-043**: Implement build/start command inference (scripts in package.json, Procfile, etc.)
+- [ ] **T-044**: Add GitHub URL cloning support (clone repo → scan → return ProjectProfile)
+- [ ] **T-045**: Write unit tests for scanner (`tests/test_scanner.py`) with fixture repos
+
+### 2.3 AI Engine
+- [ ] **T-046**: Create `axle/ai/engine.py` — `AIEngine` class with provider abstraction
+- [ ] **T-047**: Define common interface: `generate_plan(profile, server) -> DeploymentPlan`
+- [ ] **T-048**: Define common interface: `diagnose(metrics, logs) -> str`
+- [ ] **T-049**: Create `axle/ai/providers/gemini_provider.py` — Google Gemini implementation
+- [ ] **T-050**: Create `axle/ai/providers/openai_provider.py` — OpenAI GPT implementation
+- [ ] **T-050B**: Create `axle/ai/providers/openrouter_provider.py` — OpenRouter multi-model implementation
+- [ ] **T-051**: Create `axle/ai/providers/ollama_provider.py` — Local Ollama implementation
+- [ ] **T-052**: Create `axle/ai/prompts.py` — system prompts for deployment planning
+- [ ] **T-053**: Add prompt for diagnosis/monitoring context
+- [ ] **T-054**: Implement provider fallback (Gemini → OpenRouter → OpenAI → Ollama)
+- [ ] **T-055**: Write unit tests for AI engine with mocked providers (`tests/test_ai.py`)
+
+### 2.4 Deployment Planner
+- [ ] **T-056**: Create `axle/core/planner.py` — `Planner` class
+- [ ] **T-057**: Implement `generate_plan()` — takes ProjectProfile + ServerProfile → calls AI → returns DeploymentPlan
+- [ ] **T-058**: Implement step dependency resolution (which steps can run in parallel)
+- [ ] **T-059**: Implement plan validation (check all required steps present)
+- [ ] **T-060**: Implement plan preview/dry-run output (formatted for CLI)
+- [ ] **T-061**: Write unit tests for planner (`tests/test_planner.py`)
+
+### 2.5 Sprint 2 Verification
+- [ ] **T-062**: End-to-end test: clone real repo → scan → generate plan → print plan
+- [ ] **T-063**: Test with Node.js + Express + PostgreSQL repo
+- [ ] **T-064**: Test with Python + FastAPI repo
+- [ ] **T-065**: Test with static HTML site
+- [ ] **T-066**: Update DEVLOG and CHANGELOG with Sprint 2 completion
+
+---
+
+## Sprint 3 — Server Plugins
+
+> **Goal**: Build every configuration plugin that touches the EC2 server.
+
+### 3.1 Plugin Architecture
+- [ ] **T-067**: Create `axle/plugins/base.py` — abstract `BasePlugin` class
+- [ ] **T-068**: Define plugin lifecycle: `validate() → configure() → verify() → rollback()`
+- [ ] **T-069**: Define plugin registry (discover and load plugins dynamically)
+
+### 3.2 Jinja2 Templates
+- [ ] **T-070**: Create `templates/nginx/reverse_proxy.conf.j2` (backend only)
+- [ ] **T-071**: Create `templates/nginx/static_site.conf.j2` (static files only)
+- [ ] **T-072**: Create `templates/nginx/fullstack.conf.j2` (frontend + backend + API proxy)
+- [ ] **T-073**: Create `templates/systemd/app.service.j2` (generic app service file)
+- [ ] **T-074**: Create `templates/database/postgres_init.sql.j2` (create user, db, grant)
+- [ ] **T-075**: Create `templates/database/mysql_init.sql.j2` (create user, db, grant)
+
+### 3.3 Individual Plugins
+- [ ] **T-076**: Create `axle/plugins/nginx.py` — generate config, validate (`nginx -t`), reload
+- [ ] **T-077**: Create `axle/plugins/ssl.py` — request cert via Certbot, configure HTTPS redirect, schedule renewal
+- [ ] **T-078**: Create `axle/plugins/database.py` — init PostgreSQL/MySQL, create user/db, run migrations
+- [ ] **T-079**: Create `axle/plugins/systemd.py` — write service file, enable, start, status, restart
+- [ ] **T-080**: Create `axle/plugins/runtime.py` — install Node/Python/Go, install deps, run build
+- [ ] **T-081**: Create `axle/plugins/firewall.py` — manage UFW rules (open/close ports)
+- [ ] **T-082**: Write unit tests for each plugin (`tests/test_plugins/`)
+
+### 3.4 Sprint 3 Verification
+- [ ] **T-083**: Test Nginx plugin generates valid configs for all template types
+- [ ] **T-084**: Test systemd plugin generates valid service files
+- [ ] **T-085**: Test database plugin generates valid SQL init scripts
+- [ ] **T-086**: Update DEVLOG and CHANGELOG with Sprint 3 completion
+
+---
+
+## Sprint 4 — Execution + CLI + Vault
+
+> **Goal**: Wire everything together — execute plans, manage secrets, complete CLI.
+
+### 4.1 Async Task Runner
+- [ ] **T-087**: Create `axle/core/runner.py` — `TaskRunner` class
+- [ ] **T-088**: Implement dependency graph execution (topological sort of steps)
+- [ ] **T-089**: Implement parallel execution of independent steps (asyncio.gather)
+- [ ] **T-090**: Implement real-time log streaming (stdout/stderr capture per step)
+- [ ] **T-091**: Implement step status tracking (pending → running → completed/failed)
+- [ ] **T-092**: Implement failure handling (stop on error, rollback option)
+- [ ] **T-093**: Write unit tests for runner (`tests/test_runner.py`)
+
+### 4.2 Secrets Vault
+- [ ] **T-094**: Create `axle/secrets/vault.py` — `Vault` class
+- [ ] **T-095**: Implement AES-256 encryption/decryption at rest
+- [ ] **T-096**: Implement PBKDF2 key derivation from admin password
+- [ ] **T-097**: Implement CRUD: `set(key, value)`, `get(key)`, `delete(key)`, `list_keys()`
+- [ ] **T-098**: Implement runtime injection — write to systemd `EnvironmentFile`
+- [ ] **T-099**: Ensure AI isolation — `list_keys()` returns keys only, never values
+- [ ] **T-100**: Write unit tests for vault (`tests/test_vault.py`)
+
+### 4.3 Complete CLI
+- [ ] **T-101**: `axle deploy <url>` — full flow: clone → scan → plan → confirm → execute
+- [ ] **T-102**: `axle deploy --zip <file>` — deploy from ZIP archive
+- [ ] **T-103**: `axle plan <url>` — dry-run: show plan without executing
+- [ ] **T-104**: `axle status` — show current deployment status + health
+- [ ] **T-105**: `axle logs` — stream live application logs
+- [ ] **T-106**: `axle logs --tail N` — show last N lines
+- [ ] **T-107**: `axle secrets list` — show all env variable keys (no values)
+- [ ] **T-108**: `axle secrets set KEY=value` — add/update a secret
+- [ ] **T-109**: `axle secrets delete KEY` — remove a secret
+- [ ] **T-110**: `axle rollback` — revert to previous deployment
+- [ ] **T-111**: `axle rollback --list` — list available snapshots
+- [ ] **T-112**: `axle setup` — first-boot wizard (TUI via Rich/Textual)
+- [ ] **T-113**: `axle info` — show AXLE version, system info, AI provider
+- [ ] **T-114**: `axle chat "question"` — ask AI about the server
+- [ ] **T-115**: `axle update` — self-update AXLE packages
+- [ ] **T-116**: `axle dashboard start|stop` — control the web dashboard service
+
+### 4.4 Sprint 4 Verification
+- [ ] **T-117**: End-to-end CLI test: `axle deploy` with a real GitHub repo
+- [ ] **T-118**: Test secrets vault encryption round-trip
+- [ ] **T-119**: Test rollback creates and restores snapshots correctly
+- [ ] **T-120**: Update DEVLOG and CHANGELOG with Sprint 4 completion
+
+---
+
+## Sprint 5 — Web Dashboard
+
+> **Goal**: Build the browser-based real-time dashboard.
+
+### 5.1 Flask API Backend
+- [ ] **T-121**: Create `web/api/app.py` — Flask app factory + Socket.IO + CORS
+- [ ] **T-122**: Create `web/api/auth.py` — password login (bcrypt hash, session token)
+- [ ] **T-123**: Create `web/api/routes/deploy.py` — POST /deploy, GET /deploy/status
+- [ ] **T-124**: Create `web/api/routes/projects.py` — GET /projects, GET /projects/:id
+- [ ] **T-125**: Create `web/api/routes/secrets.py` — CRUD for secrets (keys only in response)
+- [ ] **T-126**: Create `web/api/routes/monitor.py` — GET /metrics, GET /health
+- [ ] **T-127**: Create `web/api/routes/chatbot.py` — POST /chat (AI query)
+- [ ] **T-128**: Create `web/api/websocket.py` — Socket.IO events for live logs
+- [ ] **T-129**: Write API tests (`tests/test_api/`)
+
+### 5.2 React Frontend Setup
+- [ ] **T-130**: Initialize Vite + React 18 project in `web/dashboard/`
+- [ ] **T-131**: Create design system: dark theme, color tokens, typography (`index.css`)
+- [ ] **T-132**: Create layout: sidebar navigation + main content area
+- [ ] **T-133**: Install and configure Socket.IO client, React Router
+
+### 5.3 Dashboard Components
+- [ ] **T-134**: Build `DeployWizard` — URL input → scan progress → plan review → deploy → live logs
+- [ ] **T-135**: Build `LogViewer` — real-time terminal output with ANSI color support
+- [ ] **T-136**: Build `Dashboard` (home) — system metrics cards (CPU, RAM, disk), deployment status
+- [ ] **T-137**: Build `SecretsVault` — table of keys, add/edit/delete, values masked
+- [ ] **T-138**: Build `DeployHistory` — list of past deploys with rollback button
+- [ ] **T-139**: Build `Chatbot` — AI chat panel with message history
+- [ ] **T-140**: Build login page — password-based authentication
+
+### 5.4 systemd Services
+- [ ] **T-141**: Create `axle-api.service` (runs Flask API on boot)
+- [ ] **T-142**: Create `axle-dashboard.service` (serves React build on :4000)
+
+### 5.5 Sprint 5 Verification
+- [ ] **T-143**: Test dashboard login flow
+- [ ] **T-144**: Test deploy wizard end-to-end from browser
+- [ ] **T-145**: Test live log streaming via WebSocket
+- [ ] **T-146**: Test secrets management from UI
+- [ ] **T-147**: Update DEVLOG and CHANGELOG with Sprint 5 completion
+
+---
+
+## Sprint 6 — Polish & Ship
+
+> **Goal**: End-to-end testing, error handling, documentation, publish.
+
+### 6.1 Error Handling & Resilience
+- [ ] **T-148**: Add graceful failure handling to task runner (rollback on error)
+- [ ] **T-149**: Add retry logic for transient failures (network, apt installs)
+- [ ] **T-150**: Add input validation for all CLI commands
+- [ ] **T-151**: Add input validation for all API endpoints
+
+### 6.2 End-to-End Testing
+- [ ] **T-152**: Deploy test: React + Express + PostgreSQL (full-stack)
+- [ ] **T-153**: Deploy test: Next.js (SSR application)
+- [ ] **T-154**: Deploy test: Django + PostgreSQL (Python stack)
+- [ ] **T-155**: Deploy test: FastAPI (Python API)
+- [ ] **T-156**: Deploy test: Static HTML site (simplest case)
+
+### 6.3 Documentation
+- [ ] **T-157**: Write final `README.md` with badges, screenshots, quick start
+- [ ] **T-158**: Finalize `docs/getting-started.md`
+- [ ] **T-159**: Finalize `docs/architecture.md` with final diagrams
+- [ ] **T-160**: Create `docs/building-the-image.md` (how to build AXLE AMI)
+- [ ] **T-161**: Create contributor guide (`CONTRIBUTING.md`)
+
+### 6.4 Release
+- [ ] **T-162**: Build final AXLE OS AMI
+- [ ] **T-163**: Test cold launch on fresh EC2 instance
+- [ ] **T-164**: Verify first-boot wizard works end-to-end
+- [ ] **T-165**: Verify MOTD displays correctly on SSH
+- [ ] **T-166**: Verify secrets never appear in logs
+- [ ] **T-167**: Final CHANGELOG entry for v1.0.0
+- [ ] **T-168**: Tag release in Git
+
+---
+
+## Progress Summary
+
+| Sprint | Total Tasks | Done | Remaining |
+|--------|:-----------:|:----:|:---------:|
+| **1 — Foundation** | 31 | 28 | 3 |
+| **2 — Core Engine** | 35 | 0 | 35 |
+| **3 — Plugins** | 20 | 0 | 20 |
+| **4 — Execution** | 34 | 0 | 34 |
+| **5 — Dashboard** | 27 | 0 | 27 |
+| **6 — Polish** | 21 | 0 | 21 |
+| **TOTAL** | **168** | **28** | **140** |
+
+---
+
+> **Next Task**: `T-029` — Validate Packer template

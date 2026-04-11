@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+dist/
+*.egg-info/
+docs/_build/
+axle.db
+vault.enc

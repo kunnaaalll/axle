@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# =============================================================================
+# AXLE OS MOTD — 20-deployment-status (T-021)
+# Displays the currently deployed application status
+# =============================================================================
+
+AXLE_DB="/var/lib/axle/axle.db"
+
+if [ -f "/var/lib/axle/.setup-complete" ]; then
+    # Check if there's an active deployment
+    if command -v axle &>/dev/null; then
+        DEPLOY_INFO=$(axle status --brief 2>/dev/null || echo "")
+        if [ -n "$DEPLOY_INFO" ]; then
+            echo "  Deployed: ${DEPLOY_INFO}"
+        else
+            echo "  Deployed: No application deployed yet"
+        fi
+    else
+        echo "  Deployed: No application deployed yet"
+    fi
+
+    # Check SSL status
+    SSL_CERT=$(find /etc/letsencrypt/live -name "cert.pem" 2>/dev/null | head -1)
+    if [ -n "$SSL_CERT" ]; then
+        SSL_EXPIRY=$(openssl x509 -enddate -noout -in "$SSL_CERT" 2>/dev/null | cut -d= -f2)
+        echo "  SSL: Valid until ${SSL_EXPIRY}"
+    fi
+
+    # Show dashboard URL
+    DASH_PORT=$(grep "^port" /etc/axle/axle.conf 2>/dev/null | awk -F'=' '{print $2}' | tr -d ' ' || echo "4000")
+    LOCAL_IP=$(hostname -I | awk '{print $1}')
+    echo "  Dashboard: http://${LOCAL_IP}:${DASH_PORT}"
+else
+    echo "  Status: First boot — setup required"
+    echo ""
+    echo "  Run: axle setup"
+fi
+
+echo " ─────────────────────────────────────"

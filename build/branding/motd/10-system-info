@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# =============================================================================
+# AXLE OS MOTD — 10-system-info (T-020)
+# Displays live CPU, RAM, and disk usage on SSH login
+# =============================================================================
+
+# --- Gather metrics ---
+CPU_USAGE=$(top -bn1 | grep "Cpu(s)" | awk '{printf "%.0f", $2+$4}')
+RAM_TOTAL=$(free -h | awk '/Mem:/ {print $2}')
+RAM_USED=$(free -h | awk '/Mem:/ {print $3}')
+DISK_TOTAL=$(df -h / | awk 'NR==2 {print $2}')
+DISK_USED=$(df -h / | awk 'NR==2 {print $3}')
+UPTIME=$(uptime -p | sed 's/up //')
+
+# --- Read AXLE version ---
+AXLE_VERSION=$(grep "^version" /etc/axle/axle.conf 2>/dev/null | awk -F'=' '{print $2}' | tr -d ' ' || echo "1.0.0")
+
+echo " ─────────────────────────────────────"
+echo "  AXLE OS v${AXLE_VERSION} | $(lsb_release -ds 2>/dev/null || echo 'Ubuntu 22.04 LTS')"
+echo " ─────────────────────────────────────"
+echo "  CPU: ${CPU_USAGE}% | RAM: ${RAM_USED}/${RAM_TOTAL} | Disk: ${DISK_USED}/${DISK_TOTAL}"
+echo "  Uptime: ${UPTIME}"

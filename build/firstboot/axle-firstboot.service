@@ -1,0 +1,16 @@
+[Unit]
+Description=AXLE OS First-Boot Setup Wizard
+After=network-online.target cloud-init.service
+Wants=network-online.target
+ConditionPathExists=!/var/lib/axle/.setup-complete
+
+[Service]
+Type=oneshot
+ExecStart=/opt/axle/.venv/bin/python /opt/axle/firstboot.py
+RemainAfterExit=yes
+StandardInput=tty
+StandardOutput=tty
+TTYPath=/dev/tty1
+
+[Install]
+WantedBy=multi-user.target
