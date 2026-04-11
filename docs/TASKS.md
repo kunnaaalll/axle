@@ -109,32 +109,32 @@
 > **Goal**: Build every configuration plugin that touches the EC2 server.
 
 ### 3.1 Plugin Architecture
-- [ ] **T-067**: Create `axle/plugins/base.py` — abstract `BasePlugin` class
-- [ ] **T-068**: Define plugin lifecycle: `validate() → configure() → verify() → rollback()`
-- [ ] **T-069**: Define plugin registry (discover and load plugins dynamically)
+- [x] **T-067**: Create `axle/plugins/base.py` — abstract `BasePlugin` class
+- [x] **T-068**: Define plugin lifecycle: `validate() → configure() → verify() → rollback()`
+- [x] **T-069**: Define plugin registry (discover and load plugins dynamically)
 
 ### 3.2 Jinja2 Templates
-- [ ] **T-070**: Create `templates/nginx/reverse_proxy.conf.j2` (backend only)
-- [ ] **T-071**: Create `templates/nginx/static_site.conf.j2` (static files only)
-- [ ] **T-072**: Create `templates/nginx/fullstack.conf.j2` (frontend + backend + API proxy)
-- [ ] **T-073**: Create `templates/systemd/app.service.j2` (generic app service file)
-- [ ] **T-074**: Create `templates/database/postgres_init.sql.j2` (create user, db, grant)
-- [ ] **T-075**: Create `templates/database/mysql_init.sql.j2` (create user, db, grant)
+- [x] **T-070**: Create `templates/nginx/reverse_proxy.conf.j2` (backend only)
+- [x] **T-071**: Create `templates/nginx/static_site.conf.j2` (static files only)
+- [x] **T-072**: Create `templates/nginx/fullstack.conf.j2` (frontend + backend + API proxy)
+- [x] **T-073**: Create `templates/systemd/app.service.j2` (generic app service file)
+- [x] **T-074**: Create `templates/database/postgres_init.sql.j2` (create user, db, grant)
+- [x] **T-075**: Create `templates/database/mysql_init.sql.j2` (create user, db, grant)
 
 ### 3.3 Individual Plugins
-- [ ] **T-076**: Create `axle/plugins/nginx.py` — generate config, validate (`nginx -t`), reload
-- [ ] **T-077**: Create `axle/plugins/ssl.py` — request cert via Certbot, configure HTTPS redirect, schedule renewal
-- [ ] **T-078**: Create `axle/plugins/database.py` — init PostgreSQL/MySQL, create user/db, run migrations
-- [ ] **T-079**: Create `axle/plugins/systemd.py` — write service file, enable, start, status, restart
-- [ ] **T-080**: Create `axle/plugins/runtime.py` — install Node/Python/Go, install deps, run build
-- [ ] **T-081**: Create `axle/plugins/firewall.py` — manage UFW rules (open/close ports)
-- [ ] **T-082**: Write unit tests for each plugin (`tests/test_plugins/`)
+- [x] **T-076**: Create `axle/plugins/nginx.py` — generate config, validate (`nginx -t`), reload
+- [x] **T-077**: Create `axle/plugins/ssl.py` — request cert via Certbot, configure HTTPS redirect, schedule renewal
+- [x] **T-078**: Create `axle/plugins/database.py` — init PostgreSQL/MySQL, create user/db, run migrations
+- [x] **T-079**: Create `axle/plugins/systemd.py` — write service file, enable, start, status, restart
+- [x] **T-080**: Create `axle/plugins/runtime.py` — install Node/Python/Go, install deps, run build
+- [x] **T-081**: Create `axle/plugins/firewall.py` — manage UFW rules (open/close ports)
+- [x] **T-082**: Write unit tests for each plugin (`tests/test_plugins/`)
 
 ### 3.4 Sprint 3 Verification
-- [ ] **T-083**: Test Nginx plugin generates valid configs for all template types
-- [ ] **T-084**: Test systemd plugin generates valid service files
-- [ ] **T-085**: Test database plugin generates valid SQL init scripts
-- [ ] **T-086**: Update DEVLOG and CHANGELOG with Sprint 3 completion
+- [x] **T-083**: Test Nginx plugin generates valid configs for all template types
+- [x] **T-084**: Test systemd plugin generates valid service files
+- [x] **T-085**: Test database plugin generates valid SQL init scripts
+- [x] **T-086**: Update DEVLOG and CHANGELOG with Sprint 3 completion
 
 ---
 
@@ -270,12 +270,12 @@
 |--------|:-----------:|:----:|:---------:|
 | **1 — Foundation** | 31 | 28 | 3 |
 | **2 — Core Engine** | 35 | 30 | 5 |
-| **3 — Plugins** | 20 | 0 | 20 |
+| **3 — Plugins** | 20 | 20 | 0 |
 | **4 — Execution** | 34 | 0 | 34 |
 | **5 — Dashboard** | 27 | 0 | 27 |
 | **6 — Polish** | 21 | 0 | 21 |
-| **TOTAL** | **168** | **58** | **110** |
+| **TOTAL** | **168** | **78** | **90** |
 
 ---
 
-> **Next Task**: `T-062` — End-to-end verification tests
+> **Next Task**: `T-087` — Async Task Runner
