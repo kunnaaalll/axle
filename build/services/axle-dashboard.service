@@ -1,0 +1,19 @@
+[Unit]
+Description=AXLE Web Dashboard Frontend
+After=network.target axle-api.service
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/axle/web/dashboard
+Environment="PATH=/usr/bin:/usr/local/bin:/opt/homebrew/bin"
+# Run the Vite preview server or a static 'serve' package bound to 80 or 8080
+ExecStart=/usr/bin/npx serve -s dist -l 8080
+Restart=always
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=axle-dashboard
+
+[Install]
+WantedBy=multi-user.target

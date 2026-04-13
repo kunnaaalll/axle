@@ -1,0 +1,21 @@
+[Unit]
+Description=AXLE API and Execution Engine
+After=network.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/axle
+Environment="PATH=/home/ubuntu/axle/.venv/bin"
+Environment="FLASK_APP=web.api.app"
+Environment="FLASK_ENV=production"
+# We bind it to port 4000 via the internal socket.io.run execution or gunicorn
+ExecStart=/home/ubuntu/axle/.venv/bin/python3 web/api/app.py
+Restart=always
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=axle-api
+
+[Install]
+WantedBy=multi-user.target

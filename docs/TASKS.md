@@ -206,34 +206,34 @@
 > **Goal**: Build the browser-based real-time dashboard.
 
 ### 6.1 Flask API Backend
-- [ ] **T-121**: Create `web/api/app.py` — Flask app factory + Socket.IO + CORS
-- [ ] **T-122**: Create `web/api/auth.py` — password login (bcrypt hash, session token)
-- [ ] **T-123**: Create `web/api/routes/deploy.py` — POST /deploy, GET /deploy/status
-- [ ] **T-124**: Create `web/api/routes/projects.py` — GET /projects, GET /projects/:id
-- [ ] **T-125**: Create `web/api/routes/secrets.py` — CRUD for secrets (keys only in response)
-- [ ] **T-126**: Create `web/api/routes/monitor.py` — GET /metrics, GET /health
-- [ ] **T-127**: Create `web/api/routes/chatbot.py` — POST /chat (AI query)
-- [ ] **T-128**: Create `web/api/websocket.py` — Socket.IO events for live logs
+- [x] **T-121**: Create `web/api/app.py` — Flask app factory + Socket.IO + CORS
+- [x] **T-122**: Create `web/api/auth.py` — password login (bcrypt hash, session token)
+- [x] **T-123**: Create `web/api/routes/deploy.py` — POST /deploy, GET /deploy/status
+- [x] **T-124**: Create `web/api/routes/projects.py` — GET /projects, GET /projects/:id
+- [x] **T-125**: Create `web/api/routes/secrets.py` — CRUD for secrets (keys only in response)
+- [x] **T-126**: Create `web/api/routes/monitor.py` — GET /metrics, GET /health
+- [x] **T-127**: Create `web/api/routes/chatbot.py` — POST /chat (AI query)
+- [x] **T-128**: Create `web/api/websocket.py` — Socket.IO events for live logs
 - [ ] **T-129**: Write API tests (`tests/test_api/`)
 
 ### 6.2 React Frontend Setup
-- [ ] **T-130**: Initialize Vite + React 18 project in `web/dashboard/`
-- [ ] **T-131**: Create design system: dark theme, color tokens, typography (`index.css`)
-- [ ] **T-132**: Create layout: sidebar navigation + main content area
-- [ ] **T-133**: Install and configure Socket.IO client, React Router
+- [x] **T-130**: Initialize Vite + React 18 project in `web/dashboard/`
+- [x] **T-131**: Create design system: dark theme, color tokens, typography (`index.css`)
+- [x] **T-132**: Create layout: sidebar navigation + main content area
+- [x] **T-133**: Install and configure Socket.IO client, React Router
 
 ### 6.3 Dashboard Components
-- [ ] **T-134**: Build `DeployWizard` — URL input → scan progress → plan review → deploy → live logs
-- [ ] **T-135**: Build `LogViewer` — real-time terminal output with ANSI color support
-- [ ] **T-136**: Build `Dashboard` (home) — system metrics cards (CPU, RAM, disk), deployment status
-- [ ] **T-137**: Build `SecretsVault` — table of keys, add/edit/delete, values masked
+- [x] **T-134**: Build `DeployWizard` — URL input → scan progress → plan review → deploy → live logs
+- [x] **T-135**: Build `LogViewer` — real-time terminal output with ANSI color support
+- [x] **T-136**: Build `Dashboard` (home) — system metrics cards (CPU, RAM, disk), deployment status
+- [x] **T-137**: Build `SecretsVault` — table of keys, add/edit/delete, values masked
 - [ ] **T-138**: Build `DeployHistory` — list of past deploys with rollback button
-- [ ] **T-139**: Build `Chatbot` — AI chat panel with message history
+- [x] **T-139**: Build `Chatbot` — AI chat panel with message history
 - [ ] **T-140**: Build login page — password-based authentication
 
 ### 6.4 systemd Services
-- [ ] **T-141**: Create `axle-api.service` (runs Flask API on boot)
-- [ ] **T-142**: Create `axle-dashboard.service` (serves React build on :4000)
+- [x] **T-141**: Create `axle-api.service` (runs Flask API on boot)
+- [x] **T-142**: Create `axle-dashboard.service` (serves React build on :4000)
 
 ### 6.5 Sprint 6 Verification
 - [ ] **T-143**: Test dashboard login flow

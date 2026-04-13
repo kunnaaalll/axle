@@ -1,0 +1,4 @@
+#!/bin/sh
+export XDG_CURRENT_DESKTOP=XFCE
+plank &
+exec xfce4-session
