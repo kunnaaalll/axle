@@ -158,46 +158,46 @@
 > **Goal**: Wire everything together — execute plans, manage secrets, complete CLI.
 
 ### 5.1 Async Task Runner
-- [ ] **T-087**: Create `axle/core/runner.py` — `TaskRunner` class
-- [ ] **T-088**: Implement dependency graph execution (topological sort of steps)
-- [ ] **T-089**: Implement parallel execution of independent steps (asyncio.gather)
-- [ ] **T-090**: Implement real-time log streaming (stdout/stderr capture per step)
-- [ ] **T-091**: Implement step status tracking (pending → running → completed/failed)
-- [ ] **T-092**: Implement failure handling (stop on error, rollback option)
-- [ ] **T-093**: Write unit tests for runner (`tests/test_runner.py`)
+- [x] **T-087**: Create `axle/core/runner.py` — `TaskRunner` class
+- [x] **T-088**: Implement dependency graph execution (topological sort of steps)
+- [x] **T-089**: Implement parallel execution of independent steps (asyncio.gather)
+- [x] **T-090**: Implement real-time log streaming (stdout/stderr capture per step)
+- [x] **T-091**: Implement step status tracking (pending → running → completed/failed)
+- [x] **T-092**: Implement failure handling (stop on error, rollback option)
+- [x] **T-093**: Write unit tests for runner (`tests/test_runner.py`)
 
 ### 5.2 Secrets Vault
-- [ ] **T-094**: Create `axle/secrets/vault.py` — `Vault` class
-- [ ] **T-095**: Implement AES-256 encryption/decryption at rest
-- [ ] **T-096**: Implement PBKDF2 key derivation from admin password
-- [ ] **T-097**: Implement CRUD: `set(key, value)`, `get(key)`, `delete(key)`, `list_keys()`
-- [ ] **T-098**: Implement runtime injection — write to systemd `EnvironmentFile`
-- [ ] **T-099**: Ensure AI isolation — `list_keys()` returns keys only, never values
-- [ ] **T-100**: Write unit tests for vault (`tests/test_vault.py`)
+- [x] **T-094**: Create `axle/secrets/vault.py` — `Vault` class
+- [x] **T-095**: Implement AES-256 encryption/decryption at rest
+- [x] **T-096**: Implement PBKDF2 key derivation from admin password
+- [x] **T-097**: Implement CRUD: `set(key, value)`, `get(key)`, `delete(key)`, `list_keys()`
+- [x] **T-098**: Implement runtime injection — write to systemd `EnvironmentFile`
+- [x] **T-099**: Ensure AI isolation — `list_keys()` returns keys only, never values
+- [x] **T-100**: Write unit tests for vault (`tests/test_vault.py`)
 
 ### 5.3 Complete CLI
-- [ ] **T-101**: `axle deploy <url>` — full flow: clone → scan → plan → confirm → execute
-- [ ] **T-102**: `axle deploy --zip <file>` — deploy from ZIP archive
-- [ ] **T-103**: `axle plan <url>` — dry-run: show plan without executing
-- [ ] **T-104**: `axle status` — show current deployment status + health
-- [ ] **T-105**: `axle logs` — stream live application logs
-- [ ] **T-106**: `axle logs --tail N` — show last N lines
-- [ ] **T-107**: `axle secrets list` — show all env variable keys (no values)
-- [ ] **T-108**: `axle secrets set KEY=value` — add/update a secret
-- [ ] **T-109**: `axle secrets delete KEY` — remove a secret
-- [ ] **T-110**: `axle rollback` — revert to previous deployment
-- [ ] **T-111**: `axle rollback --list` — list available snapshots
-- [ ] **T-112**: `axle setup` — first-boot wizard (TUI via Rich/Textual)
-- [ ] **T-113**: `axle info` — show AXLE version, system info, AI provider
-- [ ] **T-114**: `axle chat "question"` — ask AI about the server
-- [ ] **T-115**: `axle update` — self-update AXLE packages
-- [ ] **T-116**: `axle dashboard start|stop` — control the web dashboard service
+- [x] **T-101**: `axle deploy <url>` — full flow: clone → scan → plan → confirm → execute
+- [x] **T-102**: `axle deploy --zip <file>` — deploy from ZIP archive
+- [x] **T-103**: `axle plan <url>` — dry-run: show plan without executing
+- [x] **T-104**: `axle status` — show current deployment status + health
+- [x] **T-105**: `axle logs` — stream live application logs
+- [x] **T-106**: `axle logs --tail N` — show last N lines
+- [x] **T-107**: `axle secrets list` — show all env variable keys (no values)
+- [x] **T-108**: `axle secrets set KEY=value` — add/update a secret
+- [x] **T-109**: `axle secrets delete KEY` — remove a secret
+- [x] **T-110**: `axle rollback` — revert to previous deployment
+- [x] **T-111**: `axle rollback --list` — list available snapshots
+- [x] **T-112**: `axle setup` — first-boot wizard (TUI via Rich/Textual)
+- [x] **T-113**: `axle info` — show AXLE version, system info, AI provider
+- [x] **T-114**: `axle chat "question"` — ask AI about the server
+- [x] **T-115**: `axle update` — self-update AXLE packages
+- [x] **T-116**: `axle dashboard start|stop` — control the web dashboard service
 
 ### 5.4 Sprint 5 Verification
-- [ ] **T-117**: End-to-end CLI test: `axle deploy` with a real GitHub repo
-- [ ] **T-118**: Test secrets vault encryption round-trip
-- [ ] **T-119**: Test rollback creates and restores snapshots correctly
-- [ ] **T-120**: Update DEVLOG and CHANGELOG with Sprint 5 completion
+- [x] **T-117**: End-to-end CLI test: `axle deploy` with a real GitHub repo
+- [x] **T-118**: Test secrets vault encryption round-trip
+- [x] **T-119**: Test rollback creates and restores snapshots correctly
+- [x] **T-120**: Update DEVLOG and CHANGELOG with Sprint 5 completion
 
 ---
 
@@ -214,7 +214,7 @@
 - [x] **T-126**: Create `web/api/routes/monitor.py` — GET /metrics, GET /health
 - [x] **T-127**: Create `web/api/routes/chatbot.py` — POST /chat (AI query)
 - [x] **T-128**: Create `web/api/websocket.py` — Socket.IO events for live logs
-- [ ] **T-129**: Write API tests (`tests/test_api/`)
+- [x] **T-129**: Write API tests (`tests/test_api/`)
 
 ### 6.2 React Frontend Setup
 - [x] **T-130**: Initialize Vite + React 18 project in `web/dashboard/`
@@ -227,20 +227,20 @@
 - [x] **T-135**: Build `LogViewer` — real-time terminal output with ANSI color support
 - [x] **T-136**: Build `Dashboard` (home) — system metrics cards (CPU, RAM, disk), deployment status
 - [x] **T-137**: Build `SecretsVault` — table of keys, add/edit/delete, values masked
-- [ ] **T-138**: Build `DeployHistory` — list of past deploys with rollback button
+- [x] **T-138**: Build `DeployHistory` — list of past deploys with rollback button
 - [x] **T-139**: Build `Chatbot` — AI chat panel with message history
-- [ ] **T-140**: Build login page — password-based authentication
+- [x] **T-140**: Build login page — password-based authentication
 
 ### 6.4 systemd Services
 - [x] **T-141**: Create `axle-api.service` (runs Flask API on boot)
 - [x] **T-142**: Create `axle-dashboard.service` (serves React build on :4000)
 
 ### 6.5 Sprint 6 Verification
-- [ ] **T-143**: Test dashboard login flow
-- [ ] **T-144**: Test deploy wizard end-to-end from browser
-- [ ] **T-145**: Test live log streaming via WebSocket
-- [ ] **T-146**: Test secrets management from UI
-- [ ] **T-147**: Update DEVLOG and CHANGELOG with Sprint 6 completion
+- [x] **T-143**: Test dashboard login flow
+- [x] **T-144**: Test deploy wizard end-to-end from browser
+- [x] **T-145**: Test live log streaming via WebSocket
+- [x] **T-146**: Test secrets management from UI
+- [x] **T-147**: Update DEVLOG and CHANGELOG with Sprint 6 completion
 
 ---
 
