@@ -95,45 +95,61 @@ class TaskRunner:
             self._log(f"[ERROR] {step.error}", level="error")
             return PluginResult(success=False, error=step.error)
 
-        try:
-            # 1. Validate
-            val_result = plugin.validate(context)
-            if not val_result.success:
-                step.status = DeploymentStepStatus.FAILED
-                step.error = f"Validation failed: {val_result.error}"
-                self._log(f"[FAILED] {step.name} -> {step.error}", level="error")
-                return val_result
+        max_retries = 3
+        for attempt in range(1, max_retries + 1):
+            try:
+                # 1. Validate
+                val_result = plugin.validate(context)
+                if not val_result.success:
+                    step.status = DeploymentStepStatus.FAILED
+                    step.error = f"Validation failed: {val_result.error}"
+                    self._log(f"[FAILED] {step.name} -> {step.error}", level="error")
+                    return val_result
 
-            # 2. Configure
-            cfg_result = plugin.configure(context)
-            if not cfg_result.success:
-                step.status = DeploymentStepStatus.FAILED
-                step.error = f"Configuration failed: {cfg_result.error}"
+                # 2. Configure
+                cfg_result = plugin.configure(context)
+                if not cfg_result.success:
+                    if attempt < max_retries:
+                        self._log(f"[WARN] {step.name} config failed. Retrying ({attempt}/{max_retries})...")
+                        time.sleep(2)
+                        continue
+                    
+                    step.status = DeploymentStepStatus.FAILED
+                    step.error = f"Configuration failed: {cfg_result.error}"
+                    step.output = cfg_result.output
+                    self._log(f"[FAILED] {step.name} -> {step.error}", level="error")
+                    return cfg_result
+
+                # 3. Verify
+                ver_result = plugin.verify(context)
+                if not ver_result.success:
+                    if attempt < max_retries:
+                        self._log(f"[WARN] {step.name} verify failed. Retrying ({attempt}/{max_retries})...")
+                        time.sleep(2)
+                        continue
+                    
+                    step.status = DeploymentStepStatus.FAILED
+                    step.error = f"Verification failed: {ver_result.error}"
+                    step.output = ver_result.output
+                    self._log(f"[FAILED] {step.name} -> {step.error}", level="error")
+                    return ver_result
+
+                # Success
+                step.status = DeploymentStepStatus.COMPLETED
                 step.output = cfg_result.output
-                self._log(f"[FAILED] {step.name} -> {step.error}", level="error")
+                step.duration_seconds = round(time.time() - start_time, 2)
+                self._log(f"[COMPLETED] {step.name} in {step.duration_seconds}s")
                 return cfg_result
 
-            # 3. Verify
-            ver_result = plugin.verify(context)
-            if not ver_result.success:
+            except Exception as e:
+                if attempt < max_retries:
+                    self._log(f"[WARN] Exception in {step.name}. Retrying ({attempt}/{max_retries})...")
+                    time.sleep(2)
+                    continue
                 step.status = DeploymentStepStatus.FAILED
-                step.error = f"Verification failed: {ver_result.error}"
-                step.output = ver_result.output
-                self._log(f"[FAILED] {step.name} -> {step.error}", level="error")
-                return ver_result
-
-            # Success
-            step.status = DeploymentStepStatus.COMPLETED
-            step.output = cfg_result.output
-            step.duration_seconds = round(time.time() - start_time, 2)
-            self._log(f"[COMPLETED] {step.name} in {step.duration_seconds}s")
-            return cfg_result
-
-        except Exception as e:
-            step.status = DeploymentStepStatus.FAILED
-            step.error = f"Unhandled plugin exception: {str(e)}"
-            self._log(f"[ERROR] {step.name} -> {step.error}", level="error")
-            return PluginResult(success=False, error=step.error)
+                step.error = f"Unhandled plugin exception: {str(e)}"
+                self._log(f"[ERROR] {step.name} -> {step.error}", level="error")
+                return PluginResult(success=False, error=step.error)
 
     async def rollback_plan(self, plan: DeploymentPlan, context: dict):
         """Rollback all completed steps in reverse order. (T-092)"""

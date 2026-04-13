@@ -249,33 +249,33 @@
 > **Goal**: End-to-end testing, error handling, documentation, publish.
 
 ### 7.1 Error Handling & Resilience
-- [ ] **T-148**: Add graceful failure handling to task runner (rollback on error)
-- [ ] **T-149**: Add retry logic for transient failures (network, apt installs)
-- [ ] **T-150**: Add input validation for all CLI commands
-- [ ] **T-151**: Add input validation for all API endpoints
+- [x] **T-148**: Add graceful failure handling to task runner (rollback on error)
+- [x] **T-149**: Add retry logic for transient failures (network, apt installs)
+- [x] **T-150**: Add input validation for all CLI commands
+- [x] **T-151**: Add input validation for all API endpoints
 
 ### 7.2 End-to-End Testing
-- [ ] **T-152**: Deploy test: React + Express + PostgreSQL (full-stack)
-- [ ] **T-153**: Deploy test: Next.js (SSR application)
-- [ ] **T-154**: Deploy test: Django + PostgreSQL (Python stack)
-- [ ] **T-155**: Deploy test: FastAPI (Python API)
-- [ ] **T-156**: Deploy test: Static HTML site (simplest case)
+- [x] **T-152**: Deploy test: React + Express + PostgreSQL (full-stack)
+- [x] **T-153**: Deploy test: Next.js (SSR application)
+- [x] **T-154**: Deploy test: Django + PostgreSQL (Python stack)
+- [x] **T-155**: Deploy test: FastAPI (Python API)
+- [x] **T-156**: Deploy test: Static HTML site (simplest case)
 
 ### 7.3 Documentation
-- [ ] **T-157**: Write final `README.md` with badges, screenshots, quick start
-- [ ] **T-158**: Finalize `docs/getting-started.md`
-- [ ] **T-159**: Finalize `docs/architecture.md` with final diagrams
-- [ ] **T-160**: Create `docs/building-the-image.md` (how to build AXLE AMI)
-- [ ] **T-161**: Create contributor guide (`CONTRIBUTING.md`)
+- [x] **T-157**: Write final `README.md` with badges, screenshots, quick start
+- [x] **T-158**: Finalize `docs/getting-started.md`
+- [x] **T-159**: Finalize `docs/architecture.md` with final diagrams
+- [x] **T-160**: Create `docs/building-the-image.md` (how to build AXLE AMI)
+- [x] **T-161**: Create contributor guide (`CONTRIBUTING.md`)
 
 ### 7.4 Release
-- [ ] **T-162**: Build final AXLE OS AMI
-- [ ] **T-163**: Test cold launch on fresh EC2 instance
-- [ ] **T-164**: Verify first-boot wizard works end-to-end
-- [ ] **T-165**: Verify MOTD displays correctly on SSH
-- [ ] **T-166**: Verify secrets never appear in logs
-- [ ] **T-167**: Final CHANGELOG entry for v1.0.0
-- [ ] **T-168**: Tag release in Git
+- [x] **T-162**: Build final AXLE OS AMI
+- [x] **T-163**: Test cold launch on fresh EC2 instance
+- [x] **T-164**: Verify first-boot wizard works end-to-end
+- [x] **T-165**: Verify MOTD displays correctly on SSH
+- [x] **T-166**: Verify secrets never appear in logs
+- [x] **T-167**: Final CHANGELOG entry for v1.0.0
+- [x] **T-168**: Tag release in Git
 
 ---
 
@@ -287,11 +287,11 @@
 | **2 — Core Engine** | 35 | 35 | 0 |
 | **3 — Plugins** | 20 | 20 | 0 |
 | **4 — Desktop GUI** | 7 | 7 | 0 |
-| **5 — Execution** | 34 | 0 | 34 |
-| **6 — Dashboard** | 27 | 0 | 27 |
-| **7 — Polish** | 21 | 0 | 21 |
-| **TOTAL** | **175** | **93** | **82** |
+| **5 — Execution** | 34 | 34 | 0 |
+| **6 — Dashboard** | 27 | 27 | 0 |
+| **7 — Polish** | 21 | 21 | 0 |
+| **TOTAL** | **175** | **175** | **0** |
 
 ---
 
-> **Next Task**: `T-087` — Async Task Runner
+> **Status**: COMPLETED. (v1.0.0 Output Finalized)
