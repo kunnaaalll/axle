@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "axle-os"
-version = "0.1.0"
+version = "1.0.0"
 description = "AI-Powered Linux Deployment Engine"
 authors = [
     { name = "AXLE Team" }
@@ -30,6 +30,7 @@ web = [
     "flask-socketio>=5.0",
     "flask-cors>=4.0",
     "sqlalchemy>=2.0",
+    "psutil>=5.9",
 ]
 server = [
     "paramiko>=3.0",

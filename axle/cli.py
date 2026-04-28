@@ -20,7 +20,7 @@ console = Console()
 
 
 @click.group()
-@click.version_option(version="0.1.0", prog_name="AXLE OS")
+@click.version_option(version="1.0.0", prog_name="AXLE OS")
 def main():
     """⚡ AXLE OS — AI-Powered Linux Deployment Engine"""
     pass
@@ -235,7 +235,7 @@ def del_secret(key):
 
 
 # =============================================================================
-# Sub-Commands (Status, Logs, Shell)
+# Sub-Commands (Status, Logs, Rollback, Setup, Dashboard, Chat, Update)
 # =============================================================================
 
 @main.command()
@@ -245,21 +245,109 @@ def logs(tail):
     import subprocess
     console.print(f"  [cyan]Showing last {tail} lines of syslog...[/cyan]")
     try:
-        subprocess.run(f"journalctl -n {tail} --no-pager", shell=True)
-    except:
-        console.print("[red]Command failed. Ensure you are on AXLE OS.[/red]")
+        subprocess.run(["journalctl", "-n", str(tail), "--no-pager"], check=True)
+    except FileNotFoundError:
+        console.print("  [yellow]journalctl not available. Trying /var/log/syslog...[/yellow]")
+        try:
+            subprocess.run(["tail", "-n", str(tail), "/var/log/syslog"], check=True)
+        except Exception:
+            console.print("  [red]✗ No log source found. Ensure AXLE OS is deployed.[/red]")
+    except Exception as e:
+        console.print(f"  [red]✗ Log retrieval failed: {e}[/red]")
 
 
 @main.command()
-def rollback():
+@click.option("--list", "list_snapshots", is_flag=True, help="List available snapshots")
+def rollback(list_snapshots):
     """Revert to a previous deployment state."""
-    console.print("  [yellow]Rollback not fully implemented yet.[/yellow]")
+    import subprocess
+    snapshot_dir = Path("/var/lib/axle/snapshots")
+
+    if list_snapshots:
+        console.print("\n[bold cyan]⚡ Available Snapshots[/bold cyan]\n")
+        if not snapshot_dir.exists() or not list(snapshot_dir.iterdir()):
+            console.print("  [dim]No snapshots found.[/dim]")
+            return
+        for snap in sorted(snapshot_dir.iterdir(), reverse=True):
+            console.print(f"  [green]●[/green] {snap.name}")
+        return
+
+    console.print("\n[bold cyan]⚡ AXLE Rollback[/bold cyan]\n")
+    if not snapshot_dir.exists() or not list(snapshot_dir.iterdir()):
+        console.print("  [red]✗ No snapshots available to roll back to.[/red]")
+        return
+
+    snapshots = sorted(snapshot_dir.iterdir(), reverse=True)
+    latest = snapshots[0]
+    console.print(f"  Rolling back to: [bold]{latest.name}[/bold]")
+
+    if not click.confirm("  Proceed with rollback?", default=False):
+        console.print("  [yellow]Rollback cancelled.[/yellow]")
+        return
+
+    try:
+        # Stop services, restore snapshot, restart
+        subprocess.run(["sudo", "systemctl", "stop", "axle-api"], check=False)
+        subprocess.run(["sudo", "rsync", "-a", "--delete", f"{latest}/", "/opt/axle/"], check=True)
+        subprocess.run(["sudo", "systemctl", "start", "axle-api"], check=False)
+        console.print("  [bold green]✓ Rollback completed successfully.[/bold green]")
+    except Exception as e:
+        console.print(f"  [red]✗ Rollback failed: {e}[/red]")
 
 
 @main.command()
 def setup():
     """Run the first-boot setup wizard."""
-    console.print("  [yellow]⚠  Setup wizard runs automatically on AXLE OS instances.[/yellow]")
+    from rich.prompt import Prompt
+
+    console.print(Panel(
+        "[bold cyan]⚡ AXLE OS — First Boot Setup[/bold cyan]\n\n"
+        "This wizard will configure your deployment engine.",
+        box=box.DOUBLE,
+        padding=(1, 2),
+    ))
+
+    # Step 1: AI Provider
+    provider = Prompt.ask(
+        "\n  [cyan]Select AI provider[/cyan]",
+        choices=["gemini", "openai", "openrouter", "ollama"],
+        default="gemini",
+    )
+
+    api_key = ""
+    if provider != "ollama":
+        api_key = Prompt.ask(f"  [cyan]Enter {provider.upper()} API key[/cyan]")
+
+    # Step 2: Dashboard password
+    password = Prompt.ask("  [cyan]Set dashboard admin password[/cyan]", password=True)
+
+    # Step 3: Write .env
+    env_path = Path("/opt/axle/.env")
+    env_lines = []
+    if provider == "gemini" and api_key:
+        env_lines.append(f"GEMINI_API_KEY={api_key}")
+    elif provider == "openai" and api_key:
+        env_lines.append(f"OPENAI_API_KEY={api_key}")
+    elif provider == "openrouter" and api_key:
+        env_lines.append(f"OPENROUTER_API_KEY={api_key}")
+
+    if password:
+        from werkzeug.security import generate_password_hash
+        hashed = generate_password_hash(password)
+        env_lines.append(f"AXLE_ADMIN_PASSWORD_HASH={hashed}")
+        env_lines.append(f"AXLE_VAULT_PASSWORD={password}")
+
+    try:
+        env_path.parent.mkdir(parents=True, exist_ok=True)
+        env_path.write_text("\n".join(env_lines) + "\n")
+        console.print("\n  [bold green]✓ Configuration saved to /opt/axle/.env[/bold green]")
+    except PermissionError:
+        # Fallback to local
+        local_env = Path(".env")
+        local_env.write_text("\n".join(env_lines) + "\n")
+        console.print(f"\n  [bold green]✓ Configuration saved to {local_env.absolute()}[/bold green]")
+
+    console.print("  [green]✓ Setup complete. Run 'axle status' to verify.[/green]\n")
 
 
 @main.command()
@@ -271,7 +359,7 @@ def status():
     table.add_column("Key", style="dim")
     table.add_column("Value")
 
-    table.add_row("Version", "0.1.0")
+    table.add_row("Version", "1.0.0")
     table.add_row("Status", "[green]Ready[/green]")
 
     from axle.config.settings import settings
@@ -279,8 +367,24 @@ def status():
     if settings.gemini_api_key: providers.append("Gemini ✓")
     if settings.openrouter_api_key: providers.append("OpenRouter ✓")
     if settings.openai_api_key: providers.append("OpenAI ✓")
-    
-    table.add_row("AI Providers", ", ".join(providers) if providers else "[dim]None[/dim]")
+
+    table.add_row("AI Providers", ", ".join(providers) if providers else "[dim]None — run 'axle setup'[/dim]")
+
+    # Check service status
+    import subprocess
+    for svc in ["axle-api", "axle-dashboard"]:
+        try:
+            result = subprocess.run(
+                ["systemctl", "is-active", svc],
+                capture_output=True, text=True, timeout=5,
+            )
+            state = result.stdout.strip()
+            if state == "active":
+                table.add_row(svc, "[green]● active[/green]")
+            else:
+                table.add_row(svc, f"[red]● {state}[/red]")
+        except Exception:
+            table.add_row(svc, "[dim]unknown[/dim]")
 
     console.print(table)
     console.print()
@@ -294,12 +398,100 @@ def info():
     table = Table(box=box.ROUNDED, show_header=False, padding=(0, 2))
     table.add_column("Key", style="dim")
     table.add_column("Value")
-    table.add_row("AXLE Version", "0.1.0")
+    table.add_row("AXLE Version", "1.0.0")
     table.add_row("Python", platform.python_version())
     table.add_row("OS", f"{platform.system()} {platform.release()}")
     table.add_row("Architecture", platform.machine())
+    table.add_row("Hostname", platform.node())
     console.print(table)
     console.print()
+
+
+@main.command()
+@click.argument("question")
+def chat(question):
+    """Ask the AI about your server or deployment."""
+    from axle.ai.engine import AIEngine
+    from axle.config.settings import settings
+
+    engine = AIEngine(
+        gemini_api_key=settings.gemini_api_key,
+        openai_api_key=settings.openai_api_key,
+        openrouter_api_key=settings.openrouter_api_key,
+    )
+
+    if not engine.list_available_providers():
+        console.print("  [red]✗ No AI provider configured. Run 'axle setup'.[/red]")
+        return
+
+    context = (
+        "You are AXLE OS Copilot. You help with infrastructure, deployment, "
+        "and server management inside AXLE OS.\n\n"
+        f"User Question: {question}"
+    )
+
+    with console.status("[cyan]Thinking...[/cyan]"):
+        try:
+            response = engine.generate(context)
+        except Exception as e:
+            console.print(f"  [red]✗ AI error: {e}[/red]")
+            return
+
+    console.print(Panel(response, title="[bold cyan]AXLE Copilot[/bold cyan]", box=box.ROUNDED))
+
+
+@main.command()
+def update():
+    """Self-update AXLE OS packages."""
+    import subprocess
+    console.print("\n[bold cyan]⚡ AXLE OS Update[/bold cyan]\n")
+
+    try:
+        with console.status("[cyan]Pulling latest from repository...[/cyan]"):
+            subprocess.run(["git", "-C", "/opt/axle", "pull", "--ff-only"], check=True, capture_output=True)
+        with console.status("[cyan]Installing updated dependencies...[/cyan]"):
+            subprocess.run(
+                ["/opt/axle/.venv/bin/pip", "install", "-e", "/opt/axle[all]"],
+                check=True, capture_output=True,
+            )
+        console.print("  [bold green]✓ AXLE OS updated successfully.[/bold green]")
+        console.print("  [dim]Restart services: sudo systemctl restart axle-api axle-dashboard[/dim]\n")
+    except subprocess.CalledProcessError as e:
+        console.print(f"  [red]✗ Update failed: {e}[/red]")
+    except FileNotFoundError:
+        console.print("  [red]✗ Git or pip not found. Ensure AXLE OS is installed correctly.[/red]")
+
+
+@main.group()
+def dashboard():
+    """Control the AXLE web dashboard service."""
+    pass
+
+
+@dashboard.command("start")
+def dashboard_start():
+    """Start the dashboard and API services."""
+    import subprocess
+    console.print("  [cyan]Starting AXLE services...[/cyan]")
+    try:
+        subprocess.run(["sudo", "systemctl", "start", "axle-api"], check=True)
+        subprocess.run(["sudo", "systemctl", "start", "axle-dashboard"], check=True)
+        console.print("  [bold green]✓ Dashboard is running.[/bold green]")
+    except Exception as e:
+        console.print(f"  [red]✗ Failed to start services: {e}[/red]")
+
+
+@dashboard.command("stop")
+def dashboard_stop():
+    """Stop the dashboard and API services."""
+    import subprocess
+    console.print("  [cyan]Stopping AXLE services...[/cyan]")
+    try:
+        subprocess.run(["sudo", "systemctl", "stop", "axle-dashboard"], check=True)
+        subprocess.run(["sudo", "systemctl", "stop", "axle-api"], check=True)
+        console.print("  [bold green]✓ Dashboard stopped.[/bold green]")
+    except Exception as e:
+        console.print(f"  [red]✗ Failed to stop services: {e}[/red]")
 
 
 # =============================================================================

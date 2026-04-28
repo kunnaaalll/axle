@@ -1,10 +1,38 @@
-.venv/
+# Python
 __pycache__/
 *.pyc
-.env
-.DS_Store
-dist/
+*.pyo
 *.egg-info/
-docs/_build/
-axle.db
-vault.enc
+dist/
+build/
+*.egg
+.eggs/
+.venv/
+venv/
+.coverage
+.pytest_cache/
+htmlcov/
+
+# Environment
+.env
+*.enc
+*.salt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node / Dashboard
+web/dashboard/node_modules/
+web/dashboard/dist/
+web/dashboard/.vite/
+
+# Artifacts
+*.log

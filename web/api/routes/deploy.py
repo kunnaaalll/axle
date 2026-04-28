@@ -64,6 +64,21 @@ def get_status():
         "error": active_deployment["error"]
     })
 
+# In-memory deployment history
+deployment_history = []
+
+@bp.route("/history", methods=["GET"])
+@requires_auth
+def get_history():
+    """Return list of past deployments."""
+    return jsonify({"success": True, "history": deployment_history})
+
+@bp.route("/rollback/<string:deploy_id>", methods=["POST"])
+@requires_auth
+def rollback_deploy(deploy_id):
+    """Rollback to a previous deployment (stub)."""
+    return jsonify({"success": False, "error": "Rollback not yet implemented for this deployment"}), 501
+
 def _run_deployment_background(repo_url: str, provider: str):
     """Background task to run the deployment engine."""
     global active_deployment

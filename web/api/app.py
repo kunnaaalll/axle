@@ -28,7 +28,7 @@ def create_app(test_config=None):
     # Health check route
     @app.route("/health")
     def health():
-        return jsonify({"status": "ok", "version": "0.1.0"})
+        return jsonify({"status": "ok", "version": "1.0.0"})
 
     # Initialize extensions with app
     socketio.init_app(app)

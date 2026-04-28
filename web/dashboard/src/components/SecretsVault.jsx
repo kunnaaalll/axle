@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../context/AuthContext';
 import { EyeOff, Trash2, Plus } from 'lucide-react';
 
 export default function SecretsVault() {
+  const { authFetch } = useAuth();
   const [keys, setKeys] = useState([]);
   const [newKey, setNewKey] = useState('');
   const [newVal, setNewVal] = useState('');
@@ -9,14 +11,12 @@ export default function SecretsVault() {
 
   const fetchKeys = async () => {
     try {
-      const res = await fetch('http://localhost:4000/secrets/', {
-        headers: { 'Authorization': 'Bearer DUMMY_TOKEN' }
-      });
+      const res = await authFetch('/secrets/');
       const data = await res.json();
       if (data.success) {
         setKeys(data.keys);
       }
-    } catch(err) {
+    } catch (err) {
       setError("Failed to connect to Vault API.");
     }
   };
@@ -27,31 +27,32 @@ export default function SecretsVault() {
 
   const handleAdd = async (e) => {
     e.preventDefault();
+    setError(null);
     try {
-      await fetch('http://localhost:4000/secrets/', {
+      const res = await authFetch('/secrets/', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer DUMMY_TOKEN'
-        },
-        body: JSON.stringify({ key: newKey, value: newVal })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: newKey, value: newVal }),
       });
-      setNewKey('');
-      setNewVal('');
-      fetchKeys(); // Refresh
-    } catch(err) {
+      const data = await res.json();
+      if (data.success) {
+        setNewKey('');
+        setNewVal('');
+        fetchKeys();
+      } else {
+        setError(data.error);
+      }
+    } catch (err) {
       setError("Failed to add secret.");
     }
   };
 
   const handleDelete = async (k) => {
+    if (!confirm(`Delete secret "${k}"?`)) return;
     try {
-      await fetch(`http://localhost:4000/secrets/${k}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': 'Bearer DUMMY_TOKEN' }
-      });
+      await authFetch(`/secrets/${k}`, { method: 'DELETE' });
       fetchKeys();
-    } catch(err) {
+    } catch (err) {
       setError("Failed to delete secret.");
     }
   };
@@ -60,26 +61,40 @@ export default function SecretsVault() {
     <div className="glass-panel" style={{ padding: '2rem' }}>
       <h1>Secrets Vault</h1>
       <p style={{ color: 'var(--text-muted)' }}>Secure environment variables injected into the deployment pipeline via AES-256.</p>
-      
-      {error && <p style={{color: 'var(--accent-red)'}}>{error}</p>}
+
+      {error && (
+        <div style={{
+          color: 'var(--accent-red)', marginTop: '1rem', padding: '10px 14px',
+          background: 'rgba(255,51,102,0.1)', borderRadius: '6px',
+          border: '1px solid rgba(255,51,102,0.3)',
+        }}>
+          {error}
+        </div>
+      )}
 
       <div style={{ marginTop: '2rem', display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
         {/* Secrets List */}
         <div style={{ flex: 2, minWidth: '300px' }}>
           <h3 style={{ borderBottom: '1px solid var(--panel-border)', paddingBottom: '0.5rem' }}>Active Vault Keys</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '1rem' }}>
-            {keys.length === 0 ? <p style={{ color: 'var(--text-muted)' }}>Vault is empty.</p> : null}
+            {keys.length === 0 ? (
+              <p style={{ color: 'var(--text-muted)' }}>Vault is empty. Add secrets using the form.</p>
+            ) : null}
             {keys.map((k, i) => (
-              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.05)', padding: '12px 16px', borderRadius: '6px' }}>
+              <div key={i} style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                background: 'rgba(255,255,255,0.05)', padding: '12px 16px', borderRadius: '6px',
+              }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                   <span style={{ fontFamily: 'monospace', fontWeight: 'bold', color: 'var(--accent-purple)' }}>{k}</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
                     <EyeOff size={16} /> <span>••••••••••••••••</span>
                   </div>
                 </div>
-                <button 
+                <button
                   onClick={() => handleDelete(k)}
-                  style={{ background: 'transparent', border: 'none', color: 'var(--accent-red)', cursor: 'pointer' }}
+                  style={{ background: 'transparent', border: 'none', color: 'var(--accent-red)', cursor: 'pointer', padding: '4px' }}
+                  title={`Delete ${k}`}
                 >
                   <Trash2 size={20} />
                 </button>
@@ -92,21 +107,29 @@ export default function SecretsVault() {
         <div className="glass-panel" style={{ flex: 1, minWidth: '300px', padding: '1.5rem', height: 'fit-content' }}>
           <h3>Inject Secret</h3>
           <form onSubmit={handleAdd} style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '1rem' }}>
-            <input 
-              type="text" 
-              placeholder="SECRET_KEY_NAME" 
+            <input
+              type="text"
+              placeholder="SECRET_KEY_NAME"
               value={newKey}
-              onChange={(e) => setNewKey(e.target.value.toUpperCase().replace(/\s+/g, '_'))}
+              onChange={(e) => setNewKey(e.target.value.toUpperCase().replace(/[^A-Z0-9_]/g, '_'))}
               required
-              style={{ padding: '12px', background: 'rgba(0,0,0,0.5)', border: '1px solid var(--panel-border)', color: '#fff', borderRadius: '6px', fontFamily: 'monospace' }}
+              style={{
+                padding: '12px', background: 'rgba(0,0,0,0.5)',
+                border: '1px solid var(--panel-border)', color: '#fff',
+                borderRadius: '6px', fontFamily: 'monospace', outline: 'none',
+              }}
             />
-            <input 
-              type="password" 
-              placeholder="Value" 
+            <input
+              type="password"
+              placeholder="Value"
               value={newVal}
               onChange={(e) => setNewVal(e.target.value)}
               required
-              style={{ padding: '12px', background: 'rgba(0,0,0,0.5)', border: '1px solid var(--panel-border)', color: '#fff', borderRadius: '6px' }}
+              style={{
+                padding: '12px', background: 'rgba(0,0,0,0.5)',
+                border: '1px solid var(--panel-border)', color: '#fff',
+                borderRadius: '6px', outline: 'none',
+              }}
             />
             <button type="submit" className="btn-glow" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
               <Plus size={18} /> Add to Vault
