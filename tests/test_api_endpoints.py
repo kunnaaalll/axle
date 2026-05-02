@@ -28,7 +28,7 @@ def auth_token(client):
     # Temporarily set the password hash
     import web.api.auth as auth_module
     original_hash = auth_module.ADMIN_PASSWORD_HASH
-    auth_module.ADMIN_PASSWORD_HASH = generate_password_hash("testpass")
+    auth_module.ADMIN_PASSWORD_HASH = generate_password_hash("testpass", method="pbkdf2:sha256")
 
     response = client.post("/auth/login", json={"password": "testpass"})
     assert response.status_code == 200

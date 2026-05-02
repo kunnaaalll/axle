@@ -11,8 +11,8 @@ ACTIVE_SESSIONS = set()
 # Simplified Admin Password for now (Will be derived from vault or hashed on real deploy)
 ADMIN_PASSWORD_HASH = os.environ.get(
     "AXLE_ADMIN_PASSWORD_HASH",
-    # Default is 'admin' hashed using werkzeug.generate_password_hash
-    "scrypt:32768:8:1$u72T7ZtE9q6E5yqF$ec0e4b8682cd11fe1eef7c2eb21516ab1440d16be994dc15f92ffccb0c7989d31bd1e1a539bc2f60d6910da562ae5ad334057864aa6a3a4c585c53c4d12c24c2" 
+    # Default is 'admin' hashed using werkzeug pbkdf2:sha256 (cross-platform)
+    "pbkdf2:sha256:1000000$3GfveWSNc3Cd2kBu$61640fe619599849b8520a01a9d9f1a73e376f3ef35236830d0d9d7ef1603ce9"
 )
 
 from werkzeug.security import check_password_hash
