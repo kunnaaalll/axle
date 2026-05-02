@@ -1,11 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-export default function Window({ id, title, icon, children, initialPos, initialSize, onClose, onFocus, zIndex }) {
+export default function Window({ id, title, icon, children, initialPos, initialSize, onClose, onMinimize, onFocus, zIndex }) {
   const [pos, setPos] = useState(initialPos || { x: 80, y: 60 });
   const [size, setSize] = useState(initialSize || { w: 700, h: 480 });
   const [maximized, setMaximized] = useState(false);
-  const [minimized, setMinimized] = useState(false);
-  const dragRef = useRef(null);
   const prevState = useRef({ pos, size });
 
   const handleMouseDown = (e) => {
@@ -31,8 +29,6 @@ export default function Window({ id, title, icon, children, initialPos, initialS
     setMaximized(!maximized);
   };
 
-  if (minimized) return null;
-
   return (
     <div
       className="window"
@@ -46,7 +42,7 @@ export default function Window({ id, title, icon, children, initialPos, initialS
       <div className="window-titlebar" onMouseDown={handleMouseDown} onDoubleClick={toggleMaximize}>
         <div className="window-dots">
           <button className="window-dot close" onClick={() => onClose?.(id)} />
-          <button className="window-dot minimize" onClick={() => setMinimized(true)} />
+          <button className="window-dot minimize" onClick={() => onMinimize?.(id)} />
           <button className="window-dot maximize" onClick={toggleMaximize} />
         </div>
         <span className="window-title">{icon} {title}</span>
